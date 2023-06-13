@@ -1,0 +1,2 @@
+class IncorrectSpecificationError(Exception):
+    pass
