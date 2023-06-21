@@ -204,38 +204,3 @@ skewed_daily_df.display()
 # skewed_daily_df.write.format("delta").mode("overwrite").saveAsTable(A.TableNames.skewed_test_df_simulate_daily_inserts)
 
 # COMMAND ----------
-
-
-
-# COMMAND ----------
-
-daily_df_NEW = daily_df.drop("review_scores_communication").withColumn("review_scores_communication", F.lit(1.33333))
-
-# COMMAND ----------
-
-daily_df_NEW.display()
-
-# COMMAND ----------
-
-# Define the columns you want to skew
-columns_to_skew = [col.name for col in daily_df.schema.fields if col.dataType == T.DoubleType()]
-
-# COMMAND ----------
-
-
-
-# COMMAND ----------
-
-# Define the columns you want to skew
-columns_to_skew = [col.name for col in daily_df.schema.fields if col.dataType == T.DoubleType()]
-
-daily_df_NEW = daily_df
-
-for col in columns_to_skew:
-    daily_df_NEW = daily_df_NEW.drop(F.col(col)).withColumn(col, F.lit(0.33333))
-
-daily_df_NEW.display()
-
-# COMMAND ----------
-
-daily_df_NEW.display()

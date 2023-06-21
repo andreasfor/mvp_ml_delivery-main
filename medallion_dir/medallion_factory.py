@@ -5,7 +5,9 @@ from medallion_dir import imedallion as IM
 
 
 class MedallionFactory():
-    """Factory Method is a Creational Design Pattern that allows an interface or a class to create an object, but lets subclasses decide which class or object to instantiate. Using the Factory method, we have the best ways to create an object. Here, objects are created without exposing the logic to the client, and for creating the new type of object, the client uses the same common interface. source_ https://www.geeksforgeeks.org/factory-method-python-design-patterns/ .
+    """Factory Method is a Creational Design Pattern that allows an interface or a class to create an object, but lets subclasses decide which class or object to instantiate. 
+    Using the Factory method, we have the best ways to create an object. Here, objects are created without exposing the logic to the client, and for creating the new type of object, the client uses the same common interface. 
+    source_ https://www.geeksforgeeks.org/factory-method-python-design-patterns/ .
     
     The first version only reads from internal database
     """
@@ -15,7 +17,13 @@ class MedallionFactory():
 
 
     def create_or_get(**kwargs) -> M.Medallion:
-        """Creates an object which the IMedallion functionality can be accessed"""
+        """Creates an object which the IMedallion functionality can be accessed.
+
+        :param kwargs: The key word arguments to instanciate the object.
+        :type kwargs: dict
+
+        :return: A M.Medallion instance
+        :rtype: M.Medallion"""
         
         try:
             if not isinstance(kwargs["version"], MedallionFactory.Version):

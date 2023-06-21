@@ -1,5 +1,5 @@
 # Databricks notebook source
-from machine_learning_dir import ml_class as ML
+from machine_learning_dir import ml_support as ML
 
 airbnb_df =  spark.table("default.gold_tbl")
 airbnb_df = airbnb_df.sample(fraction=0.1, seed=3)

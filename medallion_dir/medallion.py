@@ -20,22 +20,21 @@ class Medallion(IM.IMedallion):
 
     def imedallion_raw_to_bronze_transformation(self, tbl_nm, fraction, seed) -> S.dataframe.DataFrame:
 
-        """This function reads the raw data from source. This version reads from internal database and returns a bronze dataframe.
+        """
+        This function reads the raw data from source. This version reads from internal database and returns a bronze dataframe.
         
         :param tbl_nm: The table name of the raw data 
         :type tbl_nm: string
 
-        :param fraction: The fraction the data should be sampled into. Use 1.0 for full dataset. 
-        :type fraction: float
+        :param frac: The fraction the data should be sampled into. Use 1.0 for full dataset. 
+        :type frac: float
 
-        :param seed: The seed parameter of the sample function. 
-        :type seed: int
+        :param s: The seed parameter of the sample function. 
+        :type s: int
 
-        :return: S.dataframe.DataFrame
+        :return: A spark dataframe with bronze data
+        :rtype: S.dataframe.DataFrame"""
 
-        :raise: ?: ?
-        
-        """
         #Create SparkSession, needed when using repos. 
         spark = C.Common.create_spark_session()
         
@@ -47,14 +46,15 @@ class Medallion(IM.IMedallion):
 
     def imedallion_bronze_to_silver_transformation(self, bronze_df) -> S.dataframe.DataFrame:
         
-        """This function reads cleans the bronze dataframe by removing duplicates and removing nan and returns a silver dataframe.
+        """
+        This function reads cleans the bronze dataframe by removing duplicates and removing nan and returns a silver dataframe.
         
         :param bronze_df: The bronze dataframe 
         :type bronze_df: S.dataframe.DataFram
 
-        :return: S.dataframe.DataFrame
-
-        :raise: ?: ?"""
+        :return: A spark dataframe with silver data
+        :rtype: S.dataframe.DataFrame
+        """
 
         silver_df = bronze_df.dropDuplicates().dropna()
 
@@ -62,20 +62,15 @@ class Medallion(IM.IMedallion):
 
     def imedallion_silver_to_gold_transformation(self, silver_df) -> S.dataframe.DataFrame:
 
-        """This function aggregates review scores of the silver dataframe and returns a gold dataframe.
+        """
+        This function aggregates review scores of the silver dataframe and returns a gold dataframe.
         
         :param silver_df: The silver dataframe 
         :type silver_df: S.dataframe.DataFram
 
-        :return: S.dataframe.DataFrame
-
-        :raise: ?: ?"""
-        
-        '''def _aggregate_reviews(review_scores_accuracy, review_scores_cleanliness, review_scores_checkin, review_scores_communication, review_scores_location, review_scores_value):
-
-            aggregated_value = review_scores_accuracy + review_scores_cleanliness + review_scores_checkin + review_scores_communication + review_scores_location + review_scores_value
-
-            return aggregated_value'''
+        :return: A spark dataframe with gold data
+        :rtype: S.dataframe.DataFrame
+        """
 
         #Create SparkSession, needed when using repos. Otherwise will not spark.udf.register work
         spark = C.Common.create_spark_session()

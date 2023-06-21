@@ -1,6 +1,12 @@
 from enum import Enum, auto
 
 class AttributesOriginal(Enum):
+
+    """
+    This class contains the original attribute names. 
+    The main reason for having strings as enum is that it limits the possibility for spelling mistakes.
+    """
+    
     host_is_superhost = auto()
     cancellation_policy = auto()
     instant_bookable = auto()
@@ -27,14 +33,23 @@ class AttributesOriginal(Enum):
     
 
 class AttributesAdded(Enum):
+    """
+    This class contains the attribute that has been added i.e. not part of the orignal attributes.
+    """
     aggregated_review_scores = auto()
 
 
 class AttributesTarget(Enum):
+    """
+    This class contains the target attribute.
+    """
     price = auto()
     
 
 class TableNames:
+    """
+    This class contains string varibles of all the tables. This limits the possibility for spelling mistakes.
+    """
     raw_airbnb = "default.airbnb"
     gold_tbl = "default.gold_tbl"
     

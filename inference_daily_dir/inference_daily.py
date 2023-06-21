@@ -1,5 +1,6 @@
 # Databricks notebook source
-# Make widget, these can be set in the job and then extracted here 
+# Make widget, these can be set in the job and then extracted here
+
 dbutils.widgets.text(name="run_model_version", defaultValue="Empty")
 run_model_version = str(getArgument("run_model_version"))
 
@@ -9,7 +10,7 @@ run_model_version
 
 # COMMAND ----------
 
-# run_model_version = "runs:/a33aac06825542f58a1bef6c86468263/trained_pipeline"
+run_model_version = "runs:/a33aac06825542f58a1bef6c86468263/trained_pipeline"
 
 # COMMAND ----------
 

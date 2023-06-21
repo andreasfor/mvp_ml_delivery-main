@@ -3,7 +3,24 @@ from attributes_dir import attributes as A
 import dlt
 
 # I have not succeded to put this function outside of this file. It seems to be a problem when calling a class/function and use it in a udf when using DLT
-def _aggregate_reviews(review_scores_accuracy, review_scores_cleanliness, review_scores_checkin, review_scores_communication, review_scores_location, review_scores_value):
+def _aggregate_reviews(review_scores_accuracy, review_scores_cleanliness, review_scores_checkin, review_scores_communication, review_scores_location, review_scores_value) -> float:
+    """
+    Aggregate all the review scores into one number. This function shows how to create an UDF and use it in a Delta Live Table workflow.
+
+    :param review_scores_accuracy: How accurate the reviews are. From 1-10.
+    :type review_scores_accuracy: double 
+    :param review_scores_cleanliness: How clean the rental was. From 1-10
+    :param review_scores_checkin: How easy the check in was. From 1-10.
+    :type review_scores_checkin: double 
+    :param review_scores_communication: How well the communication went. From 1-10.
+    :type review_scores_communication: double
+    :param review_scores_location: Was the rental located in a good area. From 1-10.
+    :type review_scores_location: double 
+    :param review_scores_value: Was the price applicable for the rental. From 1-10.
+    :type review_scores_value: double
+    :return: The aggregated number of all the reviews.
+    :rtype: float
+    """
 
     aggregated_value = review_scores_accuracy + review_scores_cleanliness + review_scores_checkin + review_scores_communication + review_scores_location + review_scores_value
 
@@ -16,19 +33,16 @@ _aggregate_reviews_udf = spark.udf.register("_aggregate_reviews", _aggregate_rev
 @dlt.expect("cancellation_policy_empty_str", "cancellation_policy != ' ' ")
 @dlt.expect("neighbourhood_cleansed_not_null", "neighbourhood_cleansed IS NOT NULL")
 @dlt.expect("neighbourhood_cleansed_empty_str", "neighbourhood_cleansed != ' '")
-def medallion_raw_to_bronze_dlt_transformation():
+def medallion_raw_to_bronze_dlt_transformation() -> pyspark.sql.dataframe.DataFrame:
 
     """This function reads the raw data from source. This version reads from internal database and returns a bronze dataframe.
 
-    :return: S.dataframe.DataFrame
+    :return: pyspark.sql.dataframe.DataFrame
 
-    :raise: ?: ?
-    
     """
     # The version of data to be runed is controlled via the Configuration in pipeline settings of the DLT
     # We have the possibility run the test data or the skewed test data  
     run_data_version = spark.conf.get("run_data_version")
-    print("run_data_version", run_data_version)
     bronze_df = spark.table(run_data_version)
 
     bronze_df.count()
@@ -37,13 +51,13 @@ def medallion_raw_to_bronze_dlt_transformation():
 
 
 @dlt.table(name="silver_dlt_table", comment="Cleaning data by dropping duplicates and nan values")
-def medallion_bronze_to_silver_dlt_transformation():
+def medallion_bronze_to_silver_dlt_transformation() -> pyspark.sql.dataframe.DataFrame:
     
-    """This function reads cleans the bronze dataframe by removing duplicates and removing nan and returns a silver dataframe.
+    """
+    This function reads cleans the bronze dataframe by removing duplicates and removing nan and returns a silver dataframe.
 
-    :return: S.dataframe.DataFrame
-
-    :raise: ?: ?"""
+    :return: pyspark.sql.dataframe.DataFrame
+    """
 
 
     silver_df = dlt.read("bronze_dlt_table").dropDuplicates().dropna()
@@ -51,13 +65,12 @@ def medallion_bronze_to_silver_dlt_transformation():
     return silver_df
 
 @dlt.table(name="gold_dlt_table", comment="Aggregates review scores")
-def medallion_silver_to_gold_dlt_transformation():
+def medallion_silver_to_gold_dlt_transformation() -> pyspark.sql.dataframe.DataFrame:
 
     """This function aggregates review scores of the silver dataframe and returns a gold dataframe.
 
-    :return: S.dataframe.DataFrame
-
-    :raise: ?: ?"""
+    :return: pyspark.sql.dataframe.DataFrame
+    """
 
     gold_df = dlt.read("silver_dlt_table").withColumn(A.AttributesAdded.aggregated_review_scores.name, _aggregate_reviews_udf(A.AttributesOriginal.review_scores_accuracy.name, A.AttributesOriginal.review_scores_cleanliness.name, A.AttributesOriginal.review_scores_checkin.name, A.AttributesOriginal.review_scores_communication.name, A.AttributesOriginal.review_scores_location.name, A.AttributesOriginal.review_scores_value.name))
 
