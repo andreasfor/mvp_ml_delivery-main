@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>medallion_dir.medallion_factory &mdash; MVP of a ML delivery 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            MVP of a ML delivery
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">src</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">MVP of a ML delivery</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">medallion_dir.medallion_factory</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for medallion_dir.medallion_factory</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">auto</span>
+
+<span class="kn">from</span> <span class="nn">medallion_dir</span> <span class="kn">import</span> <span class="n">medallion</span> <span class="k">as</span> <span class="n">M</span>
+<span class="kn">from</span> <span class="nn">medallion_dir</span> <span class="kn">import</span> <span class="n">imedallion</span> <span class="k">as</span> <span class="n">IM</span>
+
+
+<div class="viewcode-block" id="MedallionFactory"><a class="viewcode-back" href="../../medallion_dir.medallion_factory.html#medallion_dir.medallion_factory.MedallionFactory">[docs]</a><span class="k">class</span> <span class="nc">MedallionFactory</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Factory Method is a Creational Design Pattern that allows an interface or a class to create an object, but lets subclasses decide which class or object to instantiate. </span>
+<span class="sd">    Using the Factory method, we have the best ways to create an object. Here, objects are created without exposing the logic to the client, and for creating the new type of object, the client uses the same common interface. </span>
+<span class="sd">    source_ https://www.geeksforgeeks.org/factory-method-python-design-patterns/ .</span>
+<span class="sd">    </span>
+<span class="sd">    The first version only reads from internal database</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="MedallionFactory.Version"><a class="viewcode-back" href="../../medallion_dir.medallion_factory.html#medallion_dir.medallion_factory.MedallionFactory.Version">[docs]</a>    <span class="k">class</span> <span class="nc">Version</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+        <span class="n">V1</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="MedallionFactory.create_or_get"><a class="viewcode-back" href="../../medallion_dir.medallion_factory.html#medallion_dir.medallion_factory.MedallionFactory.create_or_get">[docs]</a>    <span class="k">def</span> <span class="nf">create_or_get</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">M</span><span class="o">.</span><span class="n">Medallion</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates an object which the IMedallion functionality can be accessed.</span>
+
+<span class="sd">        :param kwargs: The key word arguments to instanciate the object.</span>
+<span class="sd">        :type kwargs: dict</span>
+
+<span class="sd">        :return: A M.Medallion instance</span>
+<span class="sd">        :rtype: M.Medallion&quot;&quot;&quot;</span>
+        
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;version&quot;</span><span class="p">],</span> <span class="n">MedallionFactory</span><span class="o">.</span><span class="n">Version</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">IncorrectSpecificationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Argument &#39;version&#39; is not a Factory.Version, instead we &quot;</span>
+                                                    <span class="sa">f</span><span class="s2">&quot;got </span><span class="si">{</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">IncorrectSpecificationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No argument &#39;version&#39; provided&quot;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;call&quot;</span><span class="p">],</span> <span class="n">IM</span><span class="o">.</span><span class="n">IMedallion</span><span class="o">.</span><span class="n">Call</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">IncorrectSpecificationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Argument &#39;call&#39; is not a IMedallion.Call, instead we &quot;</span>
+                                                    <span class="sa">f</span><span class="s2">&quot;got </span><span class="si">{</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;call&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">IncorrectSpecificationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No argument &#39;call&#39; provided&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;version&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">MedallionFactory</span><span class="o">.</span><span class="n">Version</span><span class="o">.</span><span class="n">V1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;call&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">IM</span><span class="o">.</span><span class="n">IMedallion</span><span class="o">.</span><span class="n">Call</span><span class="o">.</span><span class="n">RAW_INTERNAL_DATABASE</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">M</span><span class="o">.</span><span class="n">Medallion</span><span class="p">()</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Andreas Forsberg.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

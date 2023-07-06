@@ -157,7 +157,7 @@ def _plot_bedrooms_vs_price_fn(pred_df) -> None:
     mlflow.log_figure(fig1, "scatterplot_bedrooms_vs_price.png")
 
 
-def _extract_feature_importance_fn(featureImp, dataset, featuresCol) -> pandas.core.frame.DataFrame:
+def _extract_feature_importance_fn(featureImp, dataset, featuresCol) -> pd.core.frame.DataFrame:
     """
     This function will extract and sort the feature importance of the input data. 
 
@@ -171,7 +171,7 @@ def _extract_feature_importance_fn(featureImp, dataset, featuresCol) -> pandas.c
     :type featuresCol: str
 
     :return: A pandas dataframe that contains the most important input features in order to predict target feature. 
-    :rtype: pandas.core.frame.DataFrame
+    :rtype: pd.core.frame.DataFrame
     """
     # Borrowed from here https://www.timlrx.com/blog/feature-selection-using-feature-importance-score-creating-a-pyspark-estimator
     list_extract = []
@@ -193,7 +193,7 @@ def _plot_feature_importance_fn(feature_val_pdf) -> None:
     This function logs the the feature importance plot.
 
     :param feature_val_pdf: The feature importance in sorted order
-    :type feature_val_pdf: pandas.core.frame.DataFrame
+    :type feature_val_pdf: ppd.core.frame.DataFrame
     """
 
     fig2, ax = plt.subplots(figsize=(9, 9))

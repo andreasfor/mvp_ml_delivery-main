@@ -1,6 +1,18 @@
 import pyspark.sql.types as T
 from attributes_dir import attributes as A
+from common_dir import common
+import pyspark
 import dlt
+
+# from pyspark.context import SparkContext
+# from pyspark.sql.session import SparkSession
+
+# This is only needed for calling spark outside of Databriucks e.g when auto generating documenatation with Sphinx
+# sc = SparkContext('local')
+# spark = SparkSession(sc)
+
+# This is only needed for calling spark outside of Databriucks e.g when auto generating documenatation with Sphinx
+spark = common.Common.create_spark_session()
 
 # I have not succeded to put this function outside of this file. It seems to be a problem when calling a class/function and use it in a udf when using DLT
 def _aggregate_reviews(review_scores_accuracy, review_scores_cleanliness, review_scores_checkin, review_scores_communication, review_scores_location, review_scores_value) -> float:

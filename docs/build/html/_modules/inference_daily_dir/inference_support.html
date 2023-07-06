@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>inference_daily_dir.inference_support &mdash; MVP of a ML delivery 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            MVP of a ML delivery
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">src</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">MVP of a ML delivery</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">inference_daily_dir.inference_support</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for inference_daily_dir.inference_support</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">mlflow</span>
+<span class="kn">import</span> <span class="nn">evidently</span>
+<span class="kn">from</span> <span class="nn">evidently.report</span> <span class="kn">import</span> <span class="n">Report</span>
+<span class="kn">from</span> <span class="nn">evidently.metric_preset</span> <span class="kn">import</span> <span class="n">DataDriftPreset</span>
+<span class="kn">import</span> <span class="nn">delta.tables</span> <span class="k">as</span> <span class="nn">DT</span>
+<span class="kn">import</span> <span class="nn">pyspark.sql.types</span> <span class="k">as</span> <span class="nn">T</span>
+
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span>
+
+<span class="kn">from</span> <span class="nn">attributes_dir</span> <span class="kn">import</span> <span class="n">attributes</span> <span class="k">as</span> <span class="n">A</span>
+<span class="kn">from</span> <span class="nn">common_dir</span> <span class="kn">import</span> <span class="n">common</span> <span class="k">as</span> <span class="n">C</span>
+
+<div class="viewcode-block" id="InferenceSupportClass"><a class="viewcode-back" href="../../inference_daily_dir.inference_support.html#inference_daily_dir.inference_support.InferenceSupportClass">[docs]</a><span class="k">class</span> <span class="nc">InferenceSupportClass</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class contains supports functions used when doing inference. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="InferenceSupportClass.merge_into_fn"><a class="viewcode-back" href="../../inference_daily_dir.inference_support.html#inference_daily_dir.inference_support.InferenceSupportClass.merge_into_fn">[docs]</a>    <span class="k">def</span> <span class="nf">merge_into_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">temp_df</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Applies merge into for new data. Merge into updates the row if the join condition already exists and inserts a new row if it does not.</span>
+
+<span class="sd">        :param temp_df: The spark dataframe to be checked. </span>
+<span class="sd">        :type temp_df: pyspark.sql.dataframe.DataFrame</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1">#Create SparkSession, needed when using repos. </span>
+        <span class="n">spark</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">Common</span><span class="o">.</span><span class="n">create_spark_session</span><span class="p">()</span>
+
+        <span class="c1"># First check if table exists, else create</span>
+        <span class="k">if</span> <span class="n">spark</span><span class="o">.</span><span class="n">catalog</span><span class="o">.</span><span class="n">tableExists</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">TableNames</span><span class="o">.</span><span class="n">unseen_data_passed_to_model</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">temp_df</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;delta&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">mode</span><span class="p">(</span><span class="s2">&quot;overwrite&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">saveAsTable</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">TableNames</span><span class="o">.</span><span class="n">unseen_data_passed_to_model</span><span class="p">)</span>
+
+        <span class="c1"># If table exists, then merge</span>
+        <span class="k">if</span> <span class="n">spark</span><span class="o">.</span><span class="n">catalog</span><span class="o">.</span><span class="n">tableExists</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">TableNames</span><span class="o">.</span><span class="n">unseen_data_passed_to_model</span><span class="p">)</span> <span class="p">:</span>
+
+            <span class="n">tbl</span><span class="o">=</span><span class="n">DT</span><span class="o">.</span><span class="n">DeltaTable</span><span class="o">.</span><span class="n">forName</span><span class="p">(</span><span class="n">spark</span><span class="p">,</span><span class="n">tableOrViewName</span><span class="o">=</span><span class="n">A</span><span class="o">.</span><span class="n">TableNames</span><span class="o">.</span><span class="n">unseen_data_passed_to_model</span><span class="p">)</span>
+            
+            <span class="c1"># Very unlikely for two rows to have the same longitude and latitude</span>
+            <span class="n">join_cond</span> <span class="o">=</span> <span class="s2">&quot;original.longitude = updates.longitude and original.latitude = updates.latitude&quot;</span>
+            <span class="n">col_dct</span><span class="o">=</span><span class="p">{}</span>
+
+            <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">temp_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="n">col_dct</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;updates.</span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2">&quot;</span>
+
+            <span class="n">tbl</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;original&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">temp_df</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">&quot;updates&quot;</span><span class="p">),</span><span class="n">join_cond</span><span class="p">)</span>\
+            <span class="o">.</span><span class="n">whenMatchedUpdate</span><span class="p">(</span><span class="nb">set</span><span class="o">=</span><span class="n">col_dct</span><span class="p">)</span>\
+            <span class="o">.</span><span class="n">whenNotMatchedInsert</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="n">col_dct</span><span class="p">)</span>\
+            <span class="o">.</span><span class="n">execute</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="InferenceSupportClass.check_if_unseeen_data_is_passed_to_model_fn"><a class="viewcode-back" href="../../inference_daily_dir.inference_support.html#inference_daily_dir.inference_support.InferenceSupportClass.check_if_unseeen_data_is_passed_to_model_fn">[docs]</a>    <span class="k">def</span> <span class="nf">check_if_unseeen_data_is_passed_to_model_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">daily_df</span><span class="p">,</span> <span class="n">daily_pred_df</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function checks if unseen data is passed to the model. The model pipeline ignores rows which it has not been trained on. Therefore may the prediciton not be of the same length as the incoming data.</span>
+<span class="sd">        If subtracted_df is empty it means that no unseen data was passed to the model. </span>
+
+<span class="sd">        :param daily_df: Incoming data which is of gold standard. </span>
+<span class="sd">        :type daily_df: pyspark.sql.dataframe.DataFrame</span>
+<span class="sd">        :param daily_pred_df: The predicted data.  </span>
+<span class="sd">        :type daily_pred_df: pyspark.sql.dataframe.DataFrame</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">original_columns</span> <span class="o">=</span> <span class="n">daily_df</span><span class="o">.</span><span class="n">columns</span>
+        <span class="n">filtered_daily_pred_df</span> <span class="o">=</span> <span class="n">daily_pred_df</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">original_columns</span><span class="p">)</span>
+
+        <span class="n">subtracted_df</span> <span class="o">=</span> <span class="n">daily_df</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">filtered_daily_pred_df</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">subtracted_df</span><span class="o">.</span><span class="n">isEmpty</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">merge_into_fn</span><span class="p">(</span><span class="n">temp_df</span><span class="o">=</span><span class="n">subtracted_df</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No unseen data passed to the pipeline for inference&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="InferenceSupportClass.data_drift_fn"><a class="viewcode-back" href="../../inference_daily_dir.inference_support.html#inference_daily_dir.inference_support.InferenceSupportClass.data_drift_fn">[docs]</a>    <span class="k">def</span> <span class="nf">data_drift_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">daily_df</span><span class="p">,</span> <span class="n">reference_data_data_drift_df</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Measures the data drift of the incoming data.</span>
+
+<span class="sd">        :param daily_df: Incoming data which is of gold standard. </span>
+<span class="sd">        :type daily_df: pyspark.sql.dataframe.DataFrame</span>
+<span class="sd">        :param reference_data_data_drift_df: The reference data which the model have been trained on.  </span>
+<span class="sd">        :type reference_data_data_drift_df: pyspark.sql.dataframe.DataFrame</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">data_drift_report</span> <span class="o">=</span> <span class="n">Report</span><span class="p">(</span><span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="n">DataDriftPreset</span><span class="p">()])</span>
+        <span class="n">data_drift_report</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">current_data</span><span class="o">=</span><span class="n">daily_df</span><span class="o">.</span><span class="n">toPandas</span><span class="p">(),</span> <span class="n">reference_data</span><span class="o">=</span><span class="n">reference_data_data_drift_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s2">&quot;price&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">(),</span> <span class="n">column_mapping</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+        <span class="c1"># Saveing to dbfs and read back. Otherwise it did not work to display in Databricks</span>
+        <span class="n">data_drift_report</span><span class="o">.</span><span class="n">save_html</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/dbfs/FileStore/data_drift_report/</span><span class="si">{</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="si">}</span><span class="s2">.html&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Save report to table</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data_drift_to_tbl_fn</span><span class="p">(</span><span class="n">data_drift_report</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_data_drift_to_tbl_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_drift_report</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A support function to data_drift_fn, which saves the data drift report to a table. </span>
+
+<span class="sd">        :param data_drift_report: The Evidently data drift report, exluding target variable  </span>
+<span class="sd">        :type data_drift_report: evidently.report.report.Report</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1">#Create SparkSession, needed when using repos. </span>
+        <span class="n">spark</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">Common</span><span class="o">.</span><span class="n">create_spark_session</span><span class="p">()</span>
+
+        <span class="n">data_drift_report_dct</span> <span class="o">=</span> <span class="n">data_drift_report</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span>
+        
+        <span class="c1"># Save boolean flag as table to create an alerter in SQL dashboard</span>
+        <span class="n">data_drift_df</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">data_drift_report_dct</span><span class="p">[</span><span class="s2">&quot;metrics&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;result&quot;</span><span class="p">][</span><span class="s2">&quot;dataset_drift&quot;</span><span class="p">]),</span>  <span class="c1"># Add your data here</span>
+            <span class="p">],</span>
+            <span class="n">T</span><span class="o">.</span><span class="n">StructType</span><span class="p">(</span>  <span class="c1"># Define the whole schema within a StructType</span>
+                <span class="p">[</span>
+                    <span class="n">T</span><span class="o">.</span><span class="n">StructField</span><span class="p">(</span><span class="s2">&quot;date&quot;</span><span class="p">,</span> <span class="n">T</span><span class="o">.</span><span class="n">StringType</span><span class="p">(),</span> <span class="kc">True</span><span class="p">),</span>
+                    <span class="n">T</span><span class="o">.</span><span class="n">StructField</span><span class="p">(</span><span class="s2">&quot;drift_detected&quot;</span><span class="p">,</span> <span class="n">T</span><span class="o">.</span><span class="n">BooleanType</span><span class="p">(),</span> <span class="kc">True</span><span class="p">),</span>
+                <span class="p">]</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Saving df as a table so it can be read in SQL Dasboard and call an alert if drift is detected</span>
+        <span class="n">data_drift_df</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;delta&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">mode</span><span class="p">(</span><span class="s2">&quot;overwrite&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">saveAsTable</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">TableNames</span><span class="o">.</span><span class="n">data_drift_df</span><span class="p">)</span>
+
+<div class="viewcode-block" id="InferenceSupportClass.model_drift_fn"><a class="viewcode-back" href="../../inference_daily_dir.inference_support.html#inference_daily_dir.inference_support.InferenceSupportClass.model_drift_fn">[docs]</a>    <span class="k">def</span> <span class="nf">model_drift_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">daily_pred_df</span><span class="p">,</span> <span class="n">reference_data_data_drift_df</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Measures the model drift i.e. if the predicted data is not accurate anymore. </span>
+
+<span class="sd">        :param daily_pred_df: The daily predictions. </span>
+<span class="sd">        :type daily_pred_df: pyspark.sql.dataframe.DataFrame</span>
+<span class="sd">        :param reference_data_data_drift_df: The reference data which the model have been trained on.  </span>
+<span class="sd">        :type reference_data_data_drift_df: pyspark.sql.dataframe.DataFrame</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">model_drift_report</span> <span class="o">=</span> <span class="n">Report</span><span class="p">(</span><span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="n">DataDriftPreset</span><span class="p">()])</span>
+        <span class="n">model_drift_report</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">current_data</span><span class="o">=</span><span class="n">daily_pred_df</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;price&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">(),</span> <span class="n">reference_data</span><span class="o">=</span><span class="n">reference_data_data_drift_df</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;price&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">())</span>
+
+        <span class="n">model_drift_report</span><span class="o">.</span><span class="n">save_html</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/dbfs/FileStore/model_drift_report/</span><span class="si">{</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="si">}</span><span class="s2">.html&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Save report to table</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_model_drift_to_tbl_fn</span><span class="p">(</span><span class="n">model_drift_report</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_model_drift_to_tbl_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_drift_report</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A support function to model_drift_fn, which saves the model drift report to a table. </span>
+
+<span class="sd">        :param model_drift_report: The Evidently data drift report, only target variable  </span>
+<span class="sd">        :type model_drift_report: evidently.report.report.Report</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1">#Create SparkSession, needed when using repos. </span>
+        <span class="n">spark</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">Common</span><span class="o">.</span><span class="n">create_spark_session</span><span class="p">()</span>
+        
+        <span class="c1"># Save boolean flag as table to create an alerter in SQL dashboard</span>
+        <span class="n">model_drift_report_dct</span> <span class="o">=</span> <span class="n">model_drift_report</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span>
+
+        <span class="n">model_drift_df</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">model_drift_report_dct</span><span class="p">[</span><span class="s2">&quot;metrics&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;result&quot;</span><span class="p">][</span><span class="s2">&quot;dataset_drift&quot;</span><span class="p">]),</span> 
+            <span class="p">],</span>
+            <span class="n">T</span><span class="o">.</span><span class="n">StructType</span><span class="p">(</span>  <span class="c1"># Define the whole schema within a StructType</span>
+                <span class="p">[</span>
+                    <span class="n">T</span><span class="o">.</span><span class="n">StructField</span><span class="p">(</span><span class="s2">&quot;date&quot;</span><span class="p">,</span> <span class="n">T</span><span class="o">.</span><span class="n">StringType</span><span class="p">(),</span> <span class="kc">True</span><span class="p">),</span>
+                    <span class="n">T</span><span class="o">.</span><span class="n">StructField</span><span class="p">(</span><span class="s2">&quot;model_drift_detected&quot;</span><span class="p">,</span> <span class="n">T</span><span class="o">.</span><span class="n">BooleanType</span><span class="p">(),</span> <span class="kc">True</span><span class="p">),</span>
+                <span class="p">]</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="n">model_drift_df</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;delta&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">mode</span><span class="p">(</span><span class="s2">&quot;overwrite&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">saveAsTable</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">TableNames</span><span class="o">.</span><span class="n">model_drift_df</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Andreas Forsberg.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

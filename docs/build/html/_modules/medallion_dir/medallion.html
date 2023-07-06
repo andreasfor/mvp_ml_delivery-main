@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>medallion_dir.medallion &mdash; MVP of a ML delivery 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            MVP of a ML delivery
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">src</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">MVP of a ML delivery</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">medallion_dir.medallion</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for medallion_dir.medallion</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">pyspark</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span>
+
+<span class="kn">import</span> <span class="nn">pyspark.sql.types</span> <span class="k">as</span> <span class="nn">T</span>
+<span class="kn">import</span> <span class="nn">pyspark.sql</span> <span class="k">as</span> <span class="nn">S</span>
+<span class="kn">import</span> <span class="nn">pyspark.sql.functions</span> <span class="k">as</span> <span class="nn">F</span>
+
+<span class="kn">from</span> <span class="nn">medallion_dir</span> <span class="kn">import</span> <span class="n">imedallion</span> <span class="k">as</span> <span class="n">IM</span>
+<span class="kn">from</span> <span class="nn">attributes_dir</span> <span class="kn">import</span> <span class="n">attributes</span> <span class="k">as</span> <span class="n">A</span>
+<span class="kn">from</span> <span class="nn">common_dir</span> <span class="kn">import</span> <span class="n">common</span> <span class="k">as</span> <span class="n">C</span>
+<span class="kn">from</span> <span class="nn">medallion_dir</span> <span class="kn">import</span> <span class="n">support_functions</span> <span class="k">as</span> <span class="n">SF</span>
+
+
+<div class="viewcode-block" id="Medallion"><a class="viewcode-back" href="../../medallion_dir.medallion.html#medallion_dir.medallion.Medallion">[docs]</a><span class="k">class</span> <span class="nc">Medallion</span><span class="p">(</span><span class="n">IM</span><span class="o">.</span><span class="n">IMedallion</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This class transforms the raw data into curated data according to the medallion structure&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+    
+
+<div class="viewcode-block" id="Medallion.imedallion_raw_to_bronze_transformation"><a class="viewcode-back" href="../../medallion_dir.medallion.html#medallion_dir.medallion.Medallion.imedallion_raw_to_bronze_transformation">[docs]</a>    <span class="k">def</span> <span class="nf">imedallion_raw_to_bronze_transformation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tbl_nm</span><span class="p">,</span> <span class="n">fraction</span><span class="p">,</span> <span class="n">seed</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">S</span><span class="o">.</span><span class="n">dataframe</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function reads the raw data from source. This version reads from internal database and returns a bronze dataframe.</span>
+<span class="sd">        </span>
+<span class="sd">        :param tbl_nm: The table name of the raw data </span>
+<span class="sd">        :type tbl_nm: string</span>
+
+<span class="sd">        :param frac: The fraction the data should be sampled into. Use 1.0 for full dataset. </span>
+<span class="sd">        :type frac: float</span>
+
+<span class="sd">        :param s: The seed parameter of the sample function. </span>
+<span class="sd">        :type s: int</span>
+
+<span class="sd">        :return: A spark dataframe with bronze data</span>
+<span class="sd">        :rtype: S.dataframe.DataFrame&quot;&quot;&quot;</span>
+
+        <span class="c1">#Create SparkSession, needed when using repos. </span>
+        <span class="n">spark</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">Common</span><span class="o">.</span><span class="n">create_spark_session</span><span class="p">()</span>
+        
+        <span class="n">bronze_df</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">table</span><span class="p">(</span><span class="n">tbl_nm</span><span class="p">)</span>
+        <span class="n">bronze_df</span> <span class="o">=</span> <span class="n">bronze_df</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">fraction</span><span class="o">=</span><span class="n">fraction</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">bronze_df</span></div>
+
+
+<div class="viewcode-block" id="Medallion.imedallion_bronze_to_silver_transformation"><a class="viewcode-back" href="../../medallion_dir.medallion.html#medallion_dir.medallion.Medallion.imedallion_bronze_to_silver_transformation">[docs]</a>    <span class="k">def</span> <span class="nf">imedallion_bronze_to_silver_transformation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bronze_df</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">S</span><span class="o">.</span><span class="n">dataframe</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function reads cleans the bronze dataframe by removing duplicates and removing nan and returns a silver dataframe.</span>
+<span class="sd">        </span>
+<span class="sd">        :param bronze_df: The bronze dataframe </span>
+<span class="sd">        :type bronze_df: S.dataframe.DataFram</span>
+
+<span class="sd">        :return: A spark dataframe with silver data</span>
+<span class="sd">        :rtype: S.dataframe.DataFrame</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">silver_df</span> <span class="o">=</span> <span class="n">bronze_df</span><span class="o">.</span><span class="n">dropDuplicates</span><span class="p">()</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">silver_df</span></div>
+
+<div class="viewcode-block" id="Medallion.imedallion_silver_to_gold_transformation"><a class="viewcode-back" href="../../medallion_dir.medallion.html#medallion_dir.medallion.Medallion.imedallion_silver_to_gold_transformation">[docs]</a>    <span class="k">def</span> <span class="nf">imedallion_silver_to_gold_transformation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">silver_df</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">S</span><span class="o">.</span><span class="n">dataframe</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function aggregates review scores of the silver dataframe and returns a gold dataframe.</span>
+<span class="sd">        </span>
+<span class="sd">        :param silver_df: The silver dataframe </span>
+<span class="sd">        :type silver_df: S.dataframe.DataFram</span>
+
+<span class="sd">        :return: A spark dataframe with gold data</span>
+<span class="sd">        :rtype: S.dataframe.DataFrame</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1">#Create SparkSession, needed when using repos. Otherwise will not spark.udf.register work</span>
+        <span class="n">spark</span> <span class="o">=</span> <span class="n">C</span><span class="o">.</span><span class="n">Common</span><span class="o">.</span><span class="n">create_spark_session</span><span class="p">()</span>
+
+        <span class="c1"># Register an UDF. Need to do this version of registration when using UDFs in pyspark DLT pipelines and in repos</span>
+        <span class="n">_aggregate_reviews_udf</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">udf</span><span class="p">(</span><span class="n">SF</span><span class="o">.</span><span class="n">aggregate_reviews</span><span class="p">,</span> <span class="n">T</span><span class="o">.</span><span class="n">IntegerType</span><span class="p">())</span> 
+        
+        <span class="n">gold_df</span> <span class="o">=</span> <span class="n">silver_df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">AttributesAdded</span><span class="o">.</span><span class="n">aggregated_review_scores</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">_aggregate_reviews_udf</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">AttributesOriginal</span><span class="o">.</span><span class="n">review_scores_accuracy</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">A</span><span class="o">.</span><span class="n">AttributesOriginal</span><span class="o">.</span><span class="n">review_scores_cleanliness</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">A</span><span class="o">.</span><span class="n">AttributesOriginal</span><span class="o">.</span><span class="n">review_scores_checkin</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">A</span><span class="o">.</span><span class="n">AttributesOriginal</span><span class="o">.</span><span class="n">review_scores_communication</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">A</span><span class="o">.</span><span class="n">AttributesOriginal</span><span class="o">.</span><span class="n">review_scores_location</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">A</span><span class="o">.</span><span class="n">AttributesOriginal</span><span class="o">.</span><span class="n">review_scores_value</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+
+        <span class="c1"># Change order of columns and put target last</span>
+        <span class="n">cols</span> <span class="o">=</span> <span class="n">gold_df</span><span class="o">.</span><span class="n">columns</span>
+        <span class="n">cols</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">AttributesTarget</span><span class="o">.</span><span class="n">price</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="n">ordered_gold_df</span> <span class="o">=</span> <span class="n">gold_df</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="o">*</span><span class="n">cols</span><span class="p">,</span> <span class="n">A</span><span class="o">.</span><span class="n">AttributesTarget</span><span class="o">.</span><span class="n">price</span><span class="o">.</span><span class="n">name</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">ordered_gold_df</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Andreas Forsberg.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

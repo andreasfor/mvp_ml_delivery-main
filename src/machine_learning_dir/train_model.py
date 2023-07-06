@@ -1,5 +1,8 @@
 # Databricks notebook source
 from machine_learning_dir import ml_support as ML
+from common_dir import common
+
+spark = common.Common.create_spark_session() # Needed for creating autodocumentation with Sphinx
 
 airbnb_df =  spark.table("default.gold_tbl")
 airbnb_df = airbnb_df.sample(fraction=0.1, seed=3)

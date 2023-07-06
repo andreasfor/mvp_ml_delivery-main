@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>medallion_dir.medallion_factory module &mdash; MVP of a ML delivery 1.0.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="medallion_dir.support_functions module" href="medallion_dir.support_functions.html" />
+    <link rel="prev" title="medallion_dir.medallion module" href="medallion_dir.medallion.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            MVP of a ML delivery
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">src</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="attributes_dir.html">attributes_dir package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="common_dir.html">common_dir package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_flow_dir.html">data_flow_dir package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inference_daily_dir.html">inference_daily_dir package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="machine_learning_dir.html">machine_learning_dir package</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="medallion_dir.html">medallion_dir package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="medallion_dir.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="medallion_dir.excepetions_medallion.html">medallion_dir.excepetions_medallion module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="medallion_dir.imedallion.html">medallion_dir.imedallion module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="medallion_dir.medallion.html">medallion_dir.medallion module</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">medallion_dir.medallion_factory module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="medallion_dir.support_functions.html">medallion_dir.support_functions module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="medallion_dir.html#module-medallion_dir">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">MVP of a ML delivery</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">src</a></li>
+          <li class="breadcrumb-item"><a href="medallion_dir.html">medallion_dir package</a></li>
+      <li class="breadcrumb-item active">medallion_dir.medallion_factory module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/medallion_dir.medallion_factory.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-medallion_dir.medallion_factory">
+<span id="medallion-dir-medallion-factory-module"></span><h1>medallion_dir.medallion_factory module<a class="headerlink" href="#module-medallion_dir.medallion_factory" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="medallion_dir.medallion_factory.MedallionFactory">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">medallion_dir.medallion_factory.</span></span><span class="sig-name descname"><span class="pre">MedallionFactory</span></span><a class="reference internal" href="_modules/medallion_dir/medallion_factory.html#MedallionFactory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#medallion_dir.medallion_factory.MedallionFactory" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Factory Method is a Creational Design Pattern that allows an interface or a class to create an object, but lets subclasses decide which class or object to instantiate.
+Using the Factory method, we have the best ways to create an object. Here, objects are created without exposing the logic to the client, and for creating the new type of object, the client uses the same common interface.
+<a href="#id1"><span class="problematic" id="id2">source_</span></a> <a class="reference external" href="https://www.geeksforgeeks.org/factory-method-python-design-patterns/">https://www.geeksforgeeks.org/factory-method-python-design-patterns/</a> .</p>
+<p>The first version only reads from internal database</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="medallion_dir.medallion_factory.MedallionFactory.Version">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Version</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/medallion_dir/medallion_factory.html#MedallionFactory.Version"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#medallion_dir.medallion_factory.MedallionFactory.Version" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="medallion_dir.medallion_factory.MedallionFactory.Version.V1">
+<span class="sig-name descname"><span class="pre">V1</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#medallion_dir.medallion_factory.MedallionFactory.Version.V1" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="medallion_dir.medallion_factory.MedallionFactory.create_or_get">
+<span class="sig-name descname"><span class="pre">create_or_get</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="medallion_dir.medallion.html#medallion_dir.medallion.Medallion" title="medallion_dir.medallion.Medallion"><span class="pre">Medallion</span></a></span></span><a class="reference internal" href="_modules/medallion_dir/medallion_factory.html#MedallionFactory.create_or_get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#medallion_dir.medallion_factory.MedallionFactory.create_or_get" title="Permalink to this definition"></a></dt>
+<dd><p>Creates an object which the IMedallion functionality can be accessed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>kwargs</strong> (<em>dict</em>) – The key word arguments to instanciate the object.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A M.Medallion instance</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>M.Medallion</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="medallion_dir.medallion.html" class="btn btn-neutral float-left" title="medallion_dir.medallion module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="medallion_dir.support_functions.html" class="btn btn-neutral float-right" title="medallion_dir.support_functions module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Andreas Forsberg.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

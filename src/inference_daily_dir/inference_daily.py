@@ -1,6 +1,8 @@
 # Databricks notebook source
 # Make widget, these can be set in the job and then extracted here
 
+import dbutils
+
 dbutils.widgets.text(name="run_model_version", defaultValue="Empty")
 run_model_version = str(getArgument("run_model_version"))
 

@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>machine_learning_dir.ml_support &mdash; MVP of a ML delivery 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            MVP of a ML delivery
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">src</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">MVP of a ML delivery</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">machine_learning_dir.ml_support</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for machine_learning_dir.ml_support</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+
+<span class="kn">from</span> <span class="nn">hyperopt</span> <span class="kn">import</span> <span class="n">fmin</span><span class="p">,</span> <span class="n">tpe</span><span class="p">,</span> <span class="n">Trials</span><span class="p">,</span> <span class="n">hp</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">mlflow</span>
+<span class="kn">import</span> <span class="nn">mlflow.spark</span>
+<span class="kn">import</span> <span class="nn">hyperopt</span> <span class="k">as</span> <span class="nn">MH</span>
+
+<span class="kn">from</span> <span class="nn">pyspark.ml.feature</span> <span class="kn">import</span> <span class="n">StringIndexer</span><span class="p">,</span> <span class="n">VectorAssembler</span>
+<span class="kn">from</span> <span class="nn">pyspark.ml.regression</span> <span class="kn">import</span> <span class="n">RandomForestRegressor</span>
+<span class="kn">from</span> <span class="nn">pyspark.ml.evaluation</span> <span class="kn">import</span> <span class="n">RegressionEvaluator</span>
+<span class="kn">from</span> <span class="nn">pyspark.ml</span> <span class="kn">import</span> <span class="n">Pipeline</span>
+<span class="kn">import</span> <span class="nn">pyspark.sql.types</span> <span class="k">as</span> <span class="nn">T</span>
+
+
+<span class="n">mlflow</span><span class="o">.</span><span class="n">autolog</span><span class="p">(</span><span class="n">silent</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">log_input_examples</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_objective_function</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">pipeline</span><span class="p">,</span> <span class="n">regression_evaluator</span><span class="p">,</span> <span class="n">rf</span><span class="p">,</span> <span class="n">train_df</span><span class="p">,</span> <span class="n">val_df</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The objective function is what the model tries to minimize when using hyperopt. </span>
+
+<span class="sd">    :param params: A set of hyperparameters for the model</span>
+<span class="sd">    :type params: dict</span>
+
+<span class="sd">    :param pipeline: The model pipeline including the string indexer, vector assembler and the ml model </span>
+<span class="sd">    :type pipeline: pyspark.ml.pipeline.Pipeline</span>
+
+<span class="sd">    :param regression_evaluator: The ml model evaluator</span>
+<span class="sd">    :type regression_evaluator: pyspark.ml.evaluation.RegressionEvaluator</span>
+
+<span class="sd">    :param rf: The ml model</span>
+<span class="sd">    :type rf: pyspark.ml.regression.RandomForestRegressor</span>
+
+<span class="sd">    :param train_df: The training data</span>
+<span class="sd">    :type train_df: pyspark.sql.dataframe.DataFrame</span>
+
+<span class="sd">    :param val_df: The validation data</span>
+<span class="sd">    :type val_df: pyspark.sql.dataframe.DataFrame</span>
+
+<span class="sd">    :returns: The rmse of the trained model</span>
+<span class="sd">    :rtype: float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># set the hyperparameters that we want to tune</span>
+    <span class="n">max_depth</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;maxDepth&quot;</span><span class="p">]</span>
+    <span class="n">num_trees</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;numTrees&quot;</span><span class="p">]</span>
+
+    <span class="k">with</span> <span class="n">mlflow</span><span class="o">.</span><span class="n">start_run</span><span class="p">(</span><span class="n">nested</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+
+        <span class="n">rmse</span><span class="p">,</span> <span class="n">trained_pipeline</span><span class="p">,</span> <span class="n">pred_df</span> <span class="o">=</span> <span class="n">_objective_train_and_compute_validation_metrics_on_testing_data_fn</span><span class="p">(</span>
+            <span class="n">pipeline</span><span class="p">,</span> <span class="n">rf</span><span class="p">,</span> <span class="n">regression_evaluator</span><span class="p">,</span> <span class="n">train_df</span><span class="p">,</span> <span class="n">val_df</span><span class="p">,</span> <span class="n">max_depth</span><span class="p">,</span> <span class="n">num_trees</span><span class="p">)</span>
+
+        <span class="c1"># Used for checking for overfitting</span>
+        <span class="n">_objective_compute_validation_metrics_on_training_data_fn</span><span class="p">(</span>
+            <span class="n">trained_pipeline</span><span class="p">,</span> <span class="n">regression_evaluator</span><span class="p">,</span> <span class="n">train_df</span><span class="p">)</span>
+
+        <span class="c1"># Extract feature importance</span>
+        <span class="n">rf_pipeline</span> <span class="o">=</span> <span class="n">trained_pipeline</span><span class="o">.</span><span class="n">stages</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">feature_val_pdf</span> <span class="o">=</span> <span class="n">_extract_feature_importance_fn</span><span class="p">(</span>
+            <span class="n">rf_pipeline</span><span class="o">.</span><span class="n">featureImportances</span><span class="p">,</span> <span class="n">pred_df</span><span class="p">,</span> <span class="s2">&quot;features&quot;</span><span class="p">)</span>
+
+        <span class="c1"># # Generate a plot for feature importance and save it</span>
+        <span class="n">_plot_feature_importance_fn</span><span class="p">(</span><span class="n">feature_val_pdf</span><span class="p">)</span>
+
+        <span class="c1"># Generate a plot over prices and bedrooms and save it</span>
+        <span class="n">_plot_bedrooms_vs_price_fn</span><span class="p">(</span><span class="n">pred_df</span><span class="p">)</span>
+
+        <span class="c1"># Log pipeline for each run</span>
+        <span class="n">mlflow</span><span class="o">.</span><span class="n">spark</span><span class="o">.</span><span class="n">log_model</span><span class="p">(</span><span class="n">trained_pipeline</span><span class="p">,</span> <span class="s2">&quot;trained_pipeline&quot;</span><span class="p">)</span>
+        <span class="n">mlflow</span><span class="o">.</span><span class="n">log_param</span><span class="p">(</span><span class="s2">&quot;maxDepth&quot;</span><span class="p">,</span> <span class="n">max_depth</span><span class="p">)</span>
+        <span class="n">mlflow</span><span class="o">.</span><span class="n">log_param</span><span class="p">(</span><span class="s2">&quot;numTrees&quot;</span><span class="p">,</span> <span class="n">num_trees</span><span class="p">)</span>
+
+        <span class="c1"># Hyperopt minimizes score, here we minimize rmse</span>
+        <span class="k">return</span> <span class="n">rmse</span>
+
+
+<span class="k">def</span> <span class="nf">_objective_train_and_compute_validation_metrics_on_testing_data_fn</span><span class="p">(</span><span class="n">pipeline</span><span class="p">,</span> <span class="n">rf</span><span class="p">,</span> <span class="n">regression_evaluator</span><span class="p">,</span> <span class="n">train_df</span><span class="p">,</span> <span class="n">val_df</span><span class="p">,</span> <span class="n">max_depth</span><span class="p">,</span> <span class="n">num_trees</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function train the model and logs the rmse of the validation data.</span>
+
+<span class="sd">    :param pipeline: The model pipeline including the string indexer, vector assembler and the ml model </span>
+<span class="sd">    :type pipeline: pyspark.ml.pipeline.Pipeline</span>
+
+<span class="sd">    :param rf: The ml model</span>
+<span class="sd">    :type rf: pyspark.ml.regression.RandomForestRegressor</span>
+
+<span class="sd">    :param regression_evaluator: The ml model evaluator</span>
+<span class="sd">    :type regression_evaluator: pyspark.ml.evaluation.RegressionEvaluator</span>
+
+<span class="sd">    :param train_df: The training data</span>
+<span class="sd">    :type train_df: pyspark.sql.dataframe.DataFrame</span>
+
+<span class="sd">    :param val_df: The validation data</span>
+<span class="sd">    :type val_df: pyspark.sql.dataframe.DataFrame</span>
+
+<span class="sd">    :param max_depth: The max depth hyperparameter for the RandomForestRegression model. The type is a hyperopt.pyll.base.Apply but each iteration converts it to an int</span>
+<span class="sd">    :type max_depth: int</span>
+
+<span class="sd">    :param num_trees: The number of trees hyperparameter for the RandomForestRegression model. The type is a hyperopt.pyll.base.Apply but each iteration converts it to an int</span>
+<span class="sd">    :type num_trees: int</span>
+
+<span class="sd">    :return: a tuple of rmse, pipeline_model and pred_df</span>
+<span class="sd">    :rtype: tuple</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># This row allows the model to have different paramters each hyperopt iteration</span>
+    <span class="n">pipeline</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">copy</span><span class="p">({</span><span class="n">rf</span><span class="o">.</span><span class="n">maxDepth</span><span class="p">:</span> <span class="n">max_depth</span><span class="p">,</span> <span class="n">rf</span><span class="o">.</span><span class="n">numTrees</span><span class="p">:</span> <span class="n">num_trees</span><span class="p">})</span>
+
+    <span class="n">pipeline_model</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">train_df</span><span class="p">)</span>
+    <span class="n">pred_df</span> <span class="o">=</span> <span class="n">pipeline_model</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">val_df</span><span class="p">)</span>
+    <span class="n">rmse</span> <span class="o">=</span> <span class="n">regression_evaluator</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">pred_df</span><span class="p">)</span>
+
+    <span class="n">mlflow</span><span class="o">.</span><span class="n">log_metric</span><span class="p">(</span><span class="s2">&quot;RMSE&quot;</span><span class="p">,</span> <span class="n">rmse</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">rmse</span><span class="p">,</span> <span class="n">pipeline_model</span><span class="p">,</span> <span class="n">pred_df</span>
+
+
+<span class="k">def</span> <span class="nf">_objective_compute_validation_metrics_on_training_data_fn</span><span class="p">(</span><span class="n">trained_pipeline</span><span class="p">,</span> <span class="n">regression_evaluator</span><span class="p">,</span> <span class="n">train_df</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function validates if the trained model is overfitting. If the rmse_train is a lot lower than the rmse based on validation data. The model might overfit to the training data.</span>
+<span class="sd">    The function is logging the rmse of the training data.</span>
+
+<span class="sd">    :param trained_pipeline: The trained ml pipeline</span>
+<span class="sd">    :type trained_pipeline: pyspark.ml.pipeline.Pipeline</span>
+
+<span class="sd">    :param regression_evaluator: The ml model evaluator</span>
+<span class="sd">    :type regression_evaluator: pyspark.ml.evaluation.RegressionEvaluator </span>
+
+<span class="sd">    :param train_df: The training data</span>
+<span class="sd">    :type train_df: pyspark.sql.dataframe.DataFrame </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">train_pred_df</span> <span class="o">=</span> <span class="n">trained_pipeline</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">train_df</span><span class="p">)</span>
+    <span class="n">rmse_train</span> <span class="o">=</span> <span class="n">regression_evaluator</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">train_pred_df</span><span class="p">)</span>
+
+    <span class="n">mlflow</span><span class="o">.</span><span class="n">log_metric</span><span class="p">(</span><span class="s2">&quot;RMSE_train&quot;</span><span class="p">,</span> <span class="n">rmse_train</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_plot_bedrooms_vs_price_fn</span><span class="p">(</span><span class="n">pred_df</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function produces and saves a scatter plot with bedrooms on the x-axis and price on the y-axis. </span>
+
+<span class="sd">    :param pred_df: A dataframe that contains the extra column with target predicitons. </span>
+<span class="sd">    :type pred_df: pyspark.sql.dataframe.DataFrame </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pred_pdf</span> <span class="o">=</span> <span class="n">pred_df</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
+
+    <span class="n">fig1</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">pred_pdf</span><span class="p">[</span><span class="s2">&quot;bedrooms&quot;</span><span class="p">],</span> <span class="n">pred_pdf</span><span class="p">[</span><span class="s2">&quot;price&quot;</span><span class="p">])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Scatter Plot of Bedrooms vs Price&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">17</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Bedrooms&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Price&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+
+    <span class="c1"># Log figure under the run&#39;s root artifact directory</span>
+    <span class="n">mlflow</span><span class="o">.</span><span class="n">log_figure</span><span class="p">(</span><span class="n">fig1</span><span class="p">,</span> <span class="s2">&quot;scatterplot_bedrooms_vs_price.png&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_extract_feature_importance_fn</span><span class="p">(</span><span class="n">featureImp</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">featuresCol</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function will extract and sort the feature importance of the input data. </span>
+
+<span class="sd">    :param featureImp: The feature importance extraced from rf_pipeline.featureImportances   </span>
+<span class="sd">    :type featureImp: ?</span>
+
+<span class="sd">    :param dataset: The dataset containing the predicitons </span>
+<span class="sd">    :type dataset: pyspark.sql.dataframe.DataFrame </span>
+
+<span class="sd">    :param featuresCol: What column to investigate </span>
+<span class="sd">    :type featuresCol: str</span>
+
+<span class="sd">    :return: A pandas dataframe that contains the most important input features in order to predict target feature. </span>
+<span class="sd">    :rtype: pd.core.frame.DataFrame</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Borrowed from here https://www.timlrx.com/blog/feature-selection-using-feature-importance-score-creating-a-pyspark-estimator</span>
+    <span class="n">list_extract</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">dataset</span><span class="o">.</span><span class="n">schema</span><span class="p">[</span><span class="n">featuresCol</span><span class="p">]</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;ml_attr&quot;</span><span class="p">][</span><span class="s2">&quot;attrs&quot;</span><span class="p">]:</span>
+        <span class="n">list_extract</span> <span class="o">=</span> <span class="n">list_extract</span> <span class="o">+</span> \
+            <span class="n">dataset</span><span class="o">.</span><span class="n">schema</span><span class="p">[</span><span class="n">featuresCol</span><span class="p">]</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;ml_attr&quot;</span><span class="p">][</span><span class="s2">&quot;attrs&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">varlist</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">list_extract</span><span class="p">)</span>
+    <span class="n">varlist</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">varlist</span><span class="p">[</span><span class="s1">&#39;idx&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">featureImp</span><span class="p">[</span><span class="n">x</span><span class="p">])</span>
+
+    <span class="n">feature_val_pdf</span> <span class="o">=</span> <span class="n">varlist</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;score&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="n">feature_val_pdf</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s2">&quot;vals&quot;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">feature_val_pdf</span>
+
+
+<span class="k">def</span> <span class="nf">_plot_feature_importance_fn</span><span class="p">(</span><span class="n">feature_val_pdf</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function logs the the feature importance plot.</span>
+
+<span class="sd">    :param feature_val_pdf: The feature importance in sorted order</span>
+<span class="sd">    :type feature_val_pdf: ppd.core.frame.DataFrame</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">fig2</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="n">feature_val_pdf</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="n">feature_val_pdf</span><span class="p">[</span><span class="s2">&quot;score&quot;</span><span class="p">])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Feature Importance Plot&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">17</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Feature&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Importance&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+
+    <span class="c1"># Log figure under the run&#39;s root artifact directory</span>
+    <span class="n">mlflow</span><span class="o">.</span><span class="n">log_figure</span><span class="p">(</span><span class="n">fig2</span><span class="p">,</span> <span class="s2">&quot;feature_importance.png&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_build_pipeline_fn</span><span class="p">(</span><span class="n">train_df</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function builds the model pipeline which consits of string indexer, vector assembler and the Random Forest Regression model. </span>
+<span class="sd">    It also instanciate the regression evaluator which is used to evaluate the model.</span>
+
+<span class="sd">    :param train_df: The training data</span>
+<span class="sd">    :type train_df: pyspark.sql.dataframe.DataFrame</span>
+
+<span class="sd">    :return: A tuple of pipeline, rf and regression_evaluator</span>
+<span class="sd">    :rtype: tuple</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">categorical_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">field</span> <span class="k">for</span> <span class="p">(</span>
+        <span class="n">field</span><span class="p">,</span> <span class="n">dataType</span><span class="p">)</span> <span class="ow">in</span> <span class="n">train_df</span><span class="o">.</span><span class="n">dtypes</span> <span class="k">if</span> <span class="n">dataType</span> <span class="o">==</span> <span class="s2">&quot;string&quot;</span><span class="p">]</span>
+    <span class="n">index_output_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="o">+</span> <span class="s2">&quot;_Index&quot;</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">categorical_cols</span><span class="p">]</span>
+
+    <span class="n">string_indexer</span> <span class="o">=</span> <span class="n">StringIndexer</span><span class="p">(</span>
+        <span class="n">inputCols</span><span class="o">=</span><span class="n">categorical_cols</span><span class="p">,</span> <span class="n">outputCols</span><span class="o">=</span><span class="n">index_output_cols</span><span class="p">,</span> <span class="n">handleInvalid</span><span class="o">=</span><span class="s2">&quot;skip&quot;</span><span class="p">)</span>
+
+    <span class="n">numeric_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">field</span> <span class="k">for</span> <span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">dataType</span><span class="p">)</span> <span class="ow">in</span> <span class="n">train_df</span><span class="o">.</span><span class="n">dtypes</span> <span class="k">if</span> <span class="p">(</span>
+        <span class="p">(</span><span class="n">dataType</span> <span class="o">==</span> <span class="s2">&quot;double&quot;</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">field</span> <span class="o">!=</span> <span class="s2">&quot;price&quot;</span><span class="p">))]</span>
+    <span class="n">assembler_inputs</span> <span class="o">=</span> <span class="n">index_output_cols</span> <span class="o">+</span> <span class="n">numeric_cols</span>
+    <span class="n">vec_assembler</span> <span class="o">=</span> <span class="n">VectorAssembler</span><span class="p">(</span>
+        <span class="n">inputCols</span><span class="o">=</span><span class="n">assembler_inputs</span><span class="p">,</span> <span class="n">outputCol</span><span class="o">=</span><span class="s2">&quot;features&quot;</span><span class="p">)</span>
+
+    <span class="n">rf</span> <span class="o">=</span> <span class="n">RandomForestRegressor</span><span class="p">(</span><span class="n">labelCol</span><span class="o">=</span><span class="s2">&quot;price&quot;</span><span class="p">,</span> <span class="n">maxBins</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+    <span class="n">pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="n">stages</span><span class="o">=</span><span class="p">[</span><span class="n">string_indexer</span><span class="p">,</span> <span class="n">vec_assembler</span><span class="p">,</span> <span class="n">rf</span><span class="p">])</span>
+    <span class="n">regression_evaluator</span> <span class="o">=</span> <span class="n">RegressionEvaluator</span><span class="p">(</span>
+        <span class="n">predictionCol</span><span class="o">=</span><span class="s2">&quot;prediction&quot;</span><span class="p">,</span> <span class="n">labelCol</span><span class="o">=</span><span class="s2">&quot;price&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">pipeline</span><span class="p">,</span> <span class="n">rf</span><span class="p">,</span> <span class="n">regression_evaluator</span>
+
+
+<div class="viewcode-block" id="train_model"><a class="viewcode-back" href="../../machine_learning_dir.ml_support.html#machine_learning_dir.ml_support.train_model">[docs]</a><span class="k">def</span> <span class="nf">train_model</span><span class="p">(</span><span class="n">data_dct</span><span class="p">,</span> <span class="n">run_name</span><span class="p">,</span> <span class="n">num_evals</span><span class="p">,</span> <span class="n">search_space_dct</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function is the puplic function used by the end user. The purpose is to train N models. The models, their parameters, and scores are saved with MLflow. </span>
+
+<span class="sd">    :param data_dct: Contains both the training data and the validation data</span>
+<span class="sd">    :type data_dct: dict</span>
+
+<span class="sd">    :param run_name: The name of the experiment</span>
+<span class="sd">    :type run_name: str</span>
+
+<span class="sd">    :param num_evals: The number of models that will be trained</span>
+<span class="sd">    :type num_evals: int</span>
+
+<span class="sd">    :param search_space_dct: A dictionary containing the search space used to control the hyperopt parameters in order to build N models</span>
+<span class="sd">    :type search_space_dct: dict</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">train_df</span> <span class="o">=</span> <span class="n">data_dct</span><span class="p">[</span><span class="s2">&quot;train_df&quot;</span><span class="p">]</span>
+    <span class="n">val_df</span> <span class="o">=</span> <span class="n">data_dct</span><span class="p">[</span><span class="s2">&quot;val_df&quot;</span><span class="p">]</span>
+
+    <span class="n">search_space</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;numTrees&quot;</span><span class="p">:</span> <span class="n">MH</span><span class="o">.</span><span class="n">hp</span><span class="o">.</span><span class="n">quniform</span><span class="p">(</span><span class="s2">&quot;numTrees&quot;</span><span class="p">,</span> <span class="n">search_space_dct</span><span class="p">[</span><span class="s2">&quot;numTrees&quot;</span><span class="p">][</span><span class="s2">&quot;start&quot;</span><span class="p">],</span> <span class="n">search_space_dct</span><span class="p">[</span><span class="s2">&quot;numTrees&quot;</span><span class="p">][</span><span class="s2">&quot;end&quot;</span><span class="p">],</span> <span class="n">search_space_dct</span><span class="p">[</span><span class="s2">&quot;numTrees&quot;</span><span class="p">][</span><span class="s2">&quot;q&quot;</span><span class="p">]),</span>
+        <span class="s2">&quot;maxDepth&quot;</span><span class="p">:</span> <span class="n">MH</span><span class="o">.</span><span class="n">hp</span><span class="o">.</span><span class="n">quniform</span><span class="p">(</span><span class="s2">&quot;maxDepth&quot;</span><span class="p">,</span> <span class="n">search_space_dct</span><span class="p">[</span><span class="s2">&quot;maxDepth&quot;</span><span class="p">][</span><span class="s2">&quot;start&quot;</span><span class="p">],</span> <span class="n">search_space_dct</span><span class="p">[</span><span class="s2">&quot;maxDepth&quot;</span><span class="p">][</span><span class="s2">&quot;end&quot;</span><span class="p">],</span> <span class="n">search_space_dct</span><span class="p">[</span><span class="s2">&quot;maxDepth&quot;</span><span class="p">][</span><span class="s2">&quot;q&quot;</span><span class="p">])</span>
+    <span class="p">}</span>
+
+    <span class="n">pipeline</span><span class="p">,</span> <span class="n">rf</span><span class="p">,</span> <span class="n">regression_evaluator</span> <span class="o">=</span> <span class="n">_build_pipeline_fn</span><span class="p">(</span><span class="n">train_df</span><span class="p">)</span>
+
+    <span class="c1"># Partial facilitiates that the objective function can be called in a more flexible way</span>
+    <span class="n">fmin_objective</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">_objective_function</span><span class="p">,</span> <span class="n">pipeline</span><span class="o">=</span><span class="n">pipeline</span><span class="p">,</span>
+                             <span class="n">regression_evaluator</span><span class="o">=</span><span class="n">regression_evaluator</span><span class="p">,</span> <span class="n">rf</span><span class="o">=</span><span class="n">rf</span><span class="p">,</span> <span class="n">train_df</span><span class="o">=</span><span class="n">train_df</span><span class="p">,</span> <span class="n">val_df</span><span class="o">=</span><span class="n">val_df</span><span class="p">)</span>
+
+    <span class="n">mlflow</span><span class="o">.</span><span class="n">pyspark</span><span class="o">.</span><span class="n">ml</span><span class="o">.</span><span class="n">autolog</span><span class="p">(</span><span class="n">log_models</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">mlflow</span><span class="o">.</span><span class="n">start_run</span><span class="p">(</span><span class="n">run_name</span><span class="o">=</span><span class="n">run_name</span><span class="p">):</span>
+        <span class="n">best_hyperparam</span> <span class="o">=</span> <span class="n">fmin</span><span class="p">(</span><span class="n">fn</span><span class="o">=</span><span class="n">fmin_objective</span><span class="p">,</span>
+                               <span class="n">space</span><span class="o">=</span><span class="n">search_space</span><span class="p">,</span>
+                               <span class="n">algo</span><span class="o">=</span><span class="n">tpe</span><span class="o">.</span><span class="n">suggest</span><span class="p">,</span>
+                               <span class="n">max_evals</span><span class="o">=</span><span class="n">num_evals</span><span class="p">,</span>
+                               <span class="n">trials</span><span class="o">=</span><span class="n">Trials</span><span class="p">(),</span>
+                               <span class="n">rstate</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">42</span><span class="p">))</span>
+
+        <span class="n">best_max_depth</span> <span class="o">=</span> <span class="n">best_hyperparam</span><span class="p">[</span><span class="s2">&quot;maxDepth&quot;</span><span class="p">]</span>
+        <span class="n">best_num_trees</span> <span class="o">=</span> <span class="n">best_hyperparam</span><span class="p">[</span><span class="s2">&quot;numTrees&quot;</span><span class="p">]</span>
+
+        <span class="c1"># Log param and parameters for the final model</span>
+        <span class="n">mlflow</span><span class="o">.</span><span class="n">log_param</span><span class="p">(</span><span class="s2">&quot;maxDepth&quot;</span><span class="p">,</span> <span class="n">best_max_depth</span><span class="p">)</span>
+        <span class="n">mlflow</span><span class="o">.</span><span class="n">log_param</span><span class="p">(</span><span class="s2">&quot;numTrees&quot;</span><span class="p">,</span> <span class="n">best_num_trees</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Andreas Forsberg.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

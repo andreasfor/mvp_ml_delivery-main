@@ -15,6 +15,13 @@ import pyspark.sql.functions as F
 
 from attributes_dir import attributes as A
 
+from pyspark.context import SparkContext
+from pyspark.sql.session import SparkSession
+
+# This is only needed for calling spark outside of Databriucks e.g when auto generating documenatation with Sphinx
+sc = SparkContext('local')
+spark = SparkSession(sc)
+
 # COMMAND ----------
 
 airbnb_df =  spark.table(A.TableNames.raw_airbnb)
