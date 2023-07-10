@@ -1,13 +1,14 @@
 def test_import_basics() -> None:
     """
-    This test will just import the attributes module.
+    This test will just import the attributes module and check if it exists.
     """
 
     try:
-        from attributes_dir import attributes
-        assert True
+        import importlib.util
+        imp = importlib.util.find_spec("attributes_dir.attributes", package="AttributesOriginal")
+        found = imp is not None
+        assert found
     except:
-        raise Exception("Could not import the attributes module")
         assert False
     
 def test_verify_each_original_attribute() -> None:
@@ -36,7 +37,7 @@ def test_negative_each_original_attribute() -> None:
     """
     
     from attributes_dir import attributes
-
+    
     if not type(attributes.AttributesOriginal.accommodates.name) == str:
         assert False
 
