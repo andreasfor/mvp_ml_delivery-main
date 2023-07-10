@@ -124,7 +124,7 @@ adding_none_to_new_data_combined_df = new_data_combined_df.union(random_df)
 
 # COMMAND ----------
 
-#Replace empty string with None value
+#Replace empty string with None value for attribute cancellation_policy
 adding_none_to_new_data_combined_df = adding_none_to_new_data_combined_df.withColumn(A.AttributesOriginal.cancellation_policy.name, \
        F.when(F.col(A.AttributesOriginal.cancellation_policy.name)==" " ,None) \
           .otherwise(F.col(A.AttributesOriginal.cancellation_policy.name)))
@@ -209,5 +209,3 @@ skewed_daily_df.display()
 # COMMAND ----------
 
 # skewed_daily_df.write.format("delta").mode("overwrite").saveAsTable(A.TableNames.skewed_test_df_simulate_daily_inserts)
-
-# COMMAND ----------

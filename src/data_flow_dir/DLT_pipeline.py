@@ -15,10 +15,12 @@ import dlt
 spark = common.Common.create_spark_session()
 
 # I have not succeded to put this function outside of this file. It seems to be a problem when calling a class/function and use it in a udf when using DLT
-def _aggregate_reviews(review_scores_accuracy, review_scores_cleanliness, review_scores_checkin, review_scores_communication, review_scores_location, review_scores_value) -> float:
+def _aggregate_reviews(review_scores_rating, review_scores_accuracy, review_scores_cleanliness, review_scores_checkin, review_scores_communication, review_scores_location, review_scores_value) -> float:
     """
     Aggregate all the review scores into one number. This function shows how to create an UDF and use it in a Delta Live Table workflow.
 
+    :param review_scores_rating: How accurate the reviews are. From 1-10.
+    :type review_scores_rating: double 
     :param review_scores_accuracy: How accurate the reviews are. From 1-10.
     :type review_scores_accuracy: double 
     :param review_scores_cleanliness: How clean the rental was. From 1-10
@@ -34,7 +36,7 @@ def _aggregate_reviews(review_scores_accuracy, review_scores_cleanliness, review
     :rtype: float
     """
 
-    aggregated_value = review_scores_accuracy + review_scores_cleanliness + review_scores_checkin + review_scores_communication + review_scores_location + review_scores_value
+    aggregated_value = review_scores_rating + review_scores_accuracy + review_scores_cleanliness + review_scores_checkin + review_scores_communication + review_scores_location + review_scores_value
 
     return float(aggregated_value)
 
@@ -84,7 +86,7 @@ def medallion_silver_to_gold_dlt_transformation() -> pyspark.sql.dataframe.DataF
     :return: pyspark.sql.dataframe.DataFrame
     """
 
-    gold_df = dlt.read("silver_dlt_table").withColumn(A.AttributesAdded.aggregated_review_scores.name, _aggregate_reviews_udf(A.AttributesOriginal.review_scores_accuracy.name, A.AttributesOriginal.review_scores_cleanliness.name, A.AttributesOriginal.review_scores_checkin.name, A.AttributesOriginal.review_scores_communication.name, A.AttributesOriginal.review_scores_location.name, A.AttributesOriginal.review_scores_value.name))
+    gold_df = dlt.read("silver_dlt_table").withColumn(A.AttributesAdded.aggregated_review_scores.name, _aggregate_reviews_udf(A.AttributesOriginal.review_scores_rating.name, A.AttributesOriginal.review_scores_accuracy.name, A.AttributesOriginal.review_scores_cleanliness.name, A.AttributesOriginal.review_scores_checkin.name, A.AttributesOriginal.review_scores_communication.name, A.AttributesOriginal.review_scores_location.name, A.AttributesOriginal.review_scores_value.name))
 
     '''
     # Change order of columns and put target last
