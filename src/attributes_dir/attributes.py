@@ -53,7 +53,7 @@ class TableNames:
     raw_airbnb = "default.airbnb"
     gold_tbl = "default.gold_tbl"
     
-    test_df_simulate_daily_inserts = "default.test_df_simulate_daily_inserts"
+    test_df_simulate_daily_inserts = "default.test_df_simulate_daily_inserts"  # Used in running daily
     skewed_test_df_simulate_daily_inserts = "default.skewed_test_df_simulate_daily_inserts"
     skewed_test_df_simulate_daily_inserts_cleaned = "default.skewed_test_df_simulate_daily_inserts_cleaned"
     unseen_data_passed_to_model = "default.unseen_data_passed_to_model"

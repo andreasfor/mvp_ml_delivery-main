@@ -243,7 +243,7 @@ import pyspark.sql.functions as F
 # COMMAND ----------
 
 # filter out rows with blank strings in all the columns
-silver_df.filter(F.col(A.AttributesOriginal.review_scores_value.name) == 1)
+assert silver_df.filter(F.col(A.AttributesOriginal.review_scores_value.name) == 1).count() == 2
 
 # COMMAND ----------
 
@@ -262,4 +262,34 @@ func_2()
 
 # COMMAND ----------
 
+from data_flow_dir import help_function_dlt
+help_function_dlt.DLT_Helper.random_df_str_nm_fn()
 
+# COMMAND ----------
+
+gold_df = spark.table("dlt_integration_test.gold_dlt_table")
+
+# COMMAND ----------
+
+gold_df.display()
+
+# COMMAND ----------
+
+gold_df.printSchema()
+
+# COMMAND ----------
+
+@dlt.expect_all_or_fail({"host_is_superhost data values": "host_is_superhost in ('0', '1')",
+                         "host_is_superhost is not null": "host_is_superhost IS NOT NULL",
+                         host_is_superhost empty string no space", "host_is_superhost != '',
+                         host_is_superhost empty string space", "host_is_superhost != ' ' 
+                         })
+@dlt.expect_or_fail("cancellation_policy_not_null", "cancellation_policy IS NOT NULL")
+@dlt.expect_or_fail("cancellation_policy_empty_str", "cancellation_policy != ' ' ")
+@dlt.expect_or_fail("neighbourhood_cleansed_not_null", "neighbourhood_cleansed IS NOT NULL")
+@dlt.expect_or_fail("neighbourhood_cleansed_empty_str", "neighbourhood_cleansed != ' '")
+
+# COMMAND ----------
+
+{"host_is_superhost is str": "host_is_superhost IS NOT NULL",
+"type is not null": "type is not null"}

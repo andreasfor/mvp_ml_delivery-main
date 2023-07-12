@@ -1,20 +1,22 @@
-import pyspark.sql.types as T
+import sys
+import os
+
+# This row allows importing modules from folders
+sys.path.append(os.path.abspath('/Workspace/Repos/andreas.forsberg@capgemini.com/mvp_ml_delivery'))
+
 from attributes_dir import attributes as A
 from common_dir import common
+#from help_function_dlt import DLT_Helper
+# import help_function_dlt
+
 import pyspark
+import pyspark.sql.types as T
 import dlt
-
-# from pyspark.context import SparkContext
-# from pyspark.sql.session import SparkSession
-
-# This is only needed for calling spark outside of Databriucks e.g when auto generating documenatation with Sphinx
-# sc = SparkContext('local')
-# spark = SparkSession(sc)
 
 # This is only needed for calling spark outside of Databriucks e.g when auto generating documenatation with Sphinx
 spark = common.Common.create_spark_session()
 
-# I have not succeded to put this function outside of this file. It seems to be a problem when calling a class/function and use it in a udf when using DLT
+# I have not succeded to put this function outside of this file. It seems to be a problem when calling a class/function and use it in a UDF when using DLT
 def _aggregate_reviews(review_scores_rating, review_scores_accuracy, review_scores_cleanliness, review_scores_checkin, review_scores_communication, review_scores_location, review_scores_value) -> float:
     """
     Aggregate all the review scores into one number. This function shows how to create an UDF and use it in a Delta Live Table workflow.
@@ -55,8 +57,10 @@ def medallion_raw_to_bronze_dlt_transformation() -> pyspark.sql.dataframe.DataFr
 
     """
     # The version of data to be runed is controlled via the Configuration in pipeline settings of the DLT
-    # We have the possibility run the test data or the skewed test data  
+    # We have the possibility run the test data or the skewed test.
+    # We can also run a dlt test which calls a mock dataset which wconsists of 11 rows and will trigger additional tests for the dlt pipeline 
     run_data_version = spark.conf.get("run_data_version")
+
     bronze_df = spark.table(run_data_version)
 
     bronze_df.count()
@@ -72,7 +76,6 @@ def medallion_bronze_to_silver_dlt_transformation() -> pyspark.sql.dataframe.Dat
 
     :return: pyspark.sql.dataframe.DataFrame
     """
-
 
     silver_df = dlt.read("bronze_dlt_table").dropDuplicates().dropna()
 
