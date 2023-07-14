@@ -1,8 +1,8 @@
-import sys
-import os
+#import sys
+#import os
 
 # This row allows importing modules from folders
-sys.path.append(os.path.abspath('/Workspace/Repos/andreas.forsberg@capgemini.com/mvp_ml_delivery'))
+#sys.path.append(os.path.abspath('/Workspace/Repos/andreas.forsberg@capgemini.com/mvp_ml_delivery'))
 
 from enum import Enum, auto
 import pyspark.sql as S

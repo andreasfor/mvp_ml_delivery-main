@@ -1,21 +1,9 @@
 # Databricks notebook source
-#import os
-#import sys
-#sys.path.append(os.path.abspath('/Workspace/Repos/andreas.forsberg@capgemini.com/mvp_ml_delivery'))
-
 import pyspark.sql.types as T
 
 from src.attributes_dir import attributes as A
 from src.medallion_dir import medallion_factory as MF
 from src.medallion_dir import imedallion as IM
-
-#from attributes_dir import attributes as A
-#from medallion_dir import medallion_factory as MF
-#from medallion_dir import imedallion as IM
-
-# COMMAND ----------
-
-
 
 # COMMAND ----------
 

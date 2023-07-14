@@ -10,13 +10,8 @@ class MyTestFixture(NutterFixture):
         """
 
         try:
-            import os
-            import sys
-
-            sys.path.append(os.path.abspath('/Workspace/Repos/andreas.forsberg@capgemini.com/mvp_ml_delivery'))
-
             import ml_support as ML
-            from common_dir import common
+            from src.common_dir.common_functions import Common
 
             import pyspark.sql as S
             from random import randint, uniform
@@ -24,7 +19,7 @@ class MyTestFixture(NutterFixture):
             import mlflow
             from mlflow.tracking import MlflowClient
 
-            spark = common.Common.create_spark_session() # Needed for creating autodocumentation with Sphinx
+            spark = Common.create_spark_session() # Needed for creating autodocumentation with Sphinx
 
             # Create random data
             random_data = []

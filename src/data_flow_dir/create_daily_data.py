@@ -1,22 +1,21 @@
 # Databricks notebook source
 # This cell is used to run the transformation between pandas and pyspark
-# This cell is necessary due to cluster runtime version is under 13, I think
+# This cell is necessary due to if cluster runtime version is under 13, I think
 # %pip install -U pandas==1.5.3
 
 # COMMAND ----------
+
+from pyspark.context import SparkContext
+from pyspark.sql.session import SparkSession
+from pyspark.sql import Row
+import pyspark.sql.types as T
+import pyspark.sql.functions as F
 
 from scipy.stats import boxcox, johnsonsu
 from random import randint, uniform
 import numpy as np
 
-from pyspark.sql import Row
-import pyspark.sql.types as T
-import pyspark.sql.functions as F
-
-from attributes_dir import attributes as A
-
-from pyspark.context import SparkContext
-from pyspark.sql.session import SparkSession
+from src.attributes_dir import attributes as A
 
 # This is only needed for calling spark outside of Databriucks e.g when auto generating documenatation with Sphinx
 sc = SparkContext('local')

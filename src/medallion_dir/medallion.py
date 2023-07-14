@@ -14,7 +14,6 @@ import pyspark.sql.functions as F
 from src.medallion_dir import imedallion as IM
 from src.attributes_dir import attributes as A
 from src.common_dir import common_functions as C
-# from src.medallion_dir import support_functions as SF
 import src.medallion_dir.support_functions as SF
 
 

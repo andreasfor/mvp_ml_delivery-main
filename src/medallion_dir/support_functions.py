@@ -3,12 +3,15 @@
 #sys.path.append(os.path.abspath('/Workspace/Repos/andreas.forsberg@capgemini.com/mvp_ml_delivery'))
 
 import pyspark
-from src.attributes_dir import attributes as A
-from src.common_dir import common_functions as C 
-from pyspark.sql import Row
-from random import randint, uniform
 import pyspark.sql.types as T
 import pyspark.sql.functions as F
+
+from pyspark.sql import Row
+from random import randint, uniform
+
+from src.attributes_dir import attributes as A
+from src.common_dir.common_functions import Common
+
 
 def _aggregate_reviews(review_scores_rating, review_scores_accuracy, review_scores_cleanliness, review_scores_checkin, review_scores_communication, review_scores_location, review_scores_value) -> float:
     """
@@ -42,7 +45,7 @@ def create_mock_dataset() -> str:
     :rtype: str
     """
     
-    spark = common.Common.create_spark_session()
+    spark = Common.create_spark_session()
 
     # This dataset will be used to verify the DLT expectations in the bronze layer and the dropna in the silver layer
     random_data = []

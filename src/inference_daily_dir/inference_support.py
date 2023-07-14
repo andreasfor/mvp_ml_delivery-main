@@ -4,11 +4,10 @@ from evidently.report import Report
 from evidently.metric_preset import DataDriftPreset
 import delta.tables as DT
 import pyspark.sql.types as T
-
 from datetime import date
 
-from attributes_dir import attributes as A
-from common_dir import common as C
+from src.common_dir.common_functions import Common
+from src.attributes_dir import attributes as A
 
 class InferenceSupportClass:
     """
@@ -25,7 +24,7 @@ class InferenceSupportClass:
         """
 
         #Create SparkSession, needed when using repos. 
-        spark = C.Common.create_spark_session()
+        spark = Common.create_spark_session()
 
         # First check if table exists, else create
         if spark.catalog.tableExists(A.TableNames.unseen_data_passed_to_model) is not True:
@@ -101,7 +100,7 @@ class InferenceSupportClass:
         """
 
         #Create SparkSession, needed when using repos. 
-        spark = C.Common.create_spark_session()
+        spark = Common.create_spark_session()
 
         data_drift_report_dct = data_drift_report.as_dict()
         
@@ -150,7 +149,7 @@ class InferenceSupportClass:
         """
 
         #Create SparkSession, needed when using repos. 
-        spark = C.Common.create_spark_session()
+        spark = Common.create_spark_session()
         
         # Save boolean flag as table to create an alerter in SQL dashboard
         model_drift_report_dct = model_drift_report.as_dict()

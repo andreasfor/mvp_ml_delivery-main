@@ -1,8 +1,4 @@
 # Databricks notebook source
-import os
-import sys
-sys.path.append(os.path.abspath('/Workspace/Repos/andreas.forsberg@capgemini.com/mvp_ml_delivery'))
-
 from runtime.nutterfixture import NutterFixture, tag
 
 class MyTestFixture(NutterFixture):
@@ -13,7 +9,7 @@ class MyTestFixture(NutterFixture):
         """
         try:
             import importlib.util
-            imp_m = importlib.util.find_spec("medallion", package="Medallion")
+            imp_m = importlib.util.find_spec("src.medallion_dir.medallion", package="Medallion")
             found_m = imp_m is not None
             assert found_m
         except:
@@ -21,7 +17,7 @@ class MyTestFixture(NutterFixture):
 
         try:
             import importlib.util
-            imp_mf = importlib.util.find_spec("medallion_factory", package="MedallionFactory")
+            imp_mf = importlib.util.find_spec("src.medallion_dir.medallion_factory", package="MedallionFactory")
             found_mf = imp_mf is not None
             assert found_mf
         except:
@@ -29,7 +25,7 @@ class MyTestFixture(NutterFixture):
 
         try:
             import importlib.util
-            imp_im = importlib.util.find_spec("imedallion", package="IMedallion")
+            imp_im = importlib.util.find_spec("src.medallion_dir.imedallion", package="IMedallion")
             found_im = imp_im is not None
             assert found_im
         except:
@@ -40,23 +36,20 @@ class MyTestFixture(NutterFixture):
            The data that is read is mock data"""
         
         try:
-            from attributes_dir import attributes as A
-            import medallion_factory as MF
-            import imedallion as IM
-            from common_dir import common
-            from support_functions import create_mock_dataset
-
             import pyspark.sql as S
             import pyspark.sql.types as T
             import pyspark.sql.functions as F
+
+            from src.attributes_dir import attributes as A
+            import src.medallion_dir.medallion_factory as MF
+            import src.medallion_dir.imedallion as IM
+            from src.medallion_dir.support_functions import create_mock_dataset
 
             medallion = MF.MedallionFactory.create_or_get(
                 version = MF.MedallionFactory.Version.V1,
                 call = IM.IMedallion.Call.RAW_INTERNAL_DATABASE)
             
             table_name_of_mock_dataset_str = create_mock_dataset()
-
-            spark = common.Common.create_spark_session()
 
             bronze_df = medallion.imedallion_raw_to_bronze_transformation(tbl_nm=table_name_of_mock_dataset_str, fraction=1.0, seed=3)
 

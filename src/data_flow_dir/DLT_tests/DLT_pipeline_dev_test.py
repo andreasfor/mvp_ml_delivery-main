@@ -1,9 +1,11 @@
 """
-This test is for a Databricks function called Delta Live Tables. These are a bit complicated at a first glance (but after a few experiments you will be fine) and so are the testing of them. Therefore, is there a few work arounds in this notebook.  
+This notebook is for developing tests for a Databricks function called Delta Live Tables. These are a bit complicated at a first glance (but after a few experiments you will be fine) and so are the testing of them. Therefore, is there a few work arounds in this notebook.  
 1, You cannot run a DLT as a normal notebook. It needs to be run via workflows, which is a bit tedious when experimenting. There is a workaround for this problem; see package dlt_with_debug at link https://github.com/souvik-databricks/dlt-with-debug .
 2, You cannot run pip install without calling subprocess.
 3, You cannot run dlt-with-debug with table names, e.g. @dlt.create_table(name="bronze_dlt_table", ... ). It is therefore commented out. 
 """
+
+import pyspark
 import subprocess
 import sys
 import os
@@ -11,7 +13,6 @@ import os
 # Need to call subbprocess in order to call shell scripts in DLT 
 subprocess.check_call([sys.executable, "-m", "pip", "install", "dlt-with-debug"])
 
-# import pytest
 from dlt_with_debug import dltwithdebug, pipeline_id, showoutput
 
 if pipeline_id:
@@ -24,18 +25,13 @@ import pyspark.sql.types as T
 import pyspark.sql.functions as F
 import pyspark.sql as S
 
-# This row allows importing modules from folders
-sys.path.append(os.path.abspath('/Workspace/Repos/andreas.forsberg@capgemini.com/mvp_ml_delivery'))
-
-from attributes_dir import attributes as A
-from common_dir import common
-from help_function_dlt import DLT_Helper
-
-import pyspark
+from src.common_dir.common_functions import Common
+from src.attributes_dir import attributes as A
+from src.data_flow_dir.DLT_tests.help_function_dlt import DLT_Helper
 
 
 #This is only needed for calling spark outside of Databriucks e.g when auto generating documenatation with Sphinx
-spark = common.Common.create_spark_session()
+spark = Common.create_spark_session()
 
 #@dlt.create_table(name="bronze_dlt_table", comment="Reading data from the internal database. Expect cancellation_policy and neighbourhood_cleansed to not be null. Hpowever, we are letting the data pass (since we use expect and not expect_or_drop/fail) but we are recording the data quality. The selected features are the two most important features according to the feature importance plot which is produced when training the Random Forest model for this particular problem. However, the current data pipeline, see silver transformation, will skip rows with null values anyway but the reasoning holds for what features that should not be null. Read more concerning expections at https://docs.databricks.com/delta-live-tables/expectations.html")
 @dlt.create_table()

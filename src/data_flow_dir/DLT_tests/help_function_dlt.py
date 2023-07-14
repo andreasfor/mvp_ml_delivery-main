@@ -3,17 +3,11 @@ import pyspark.sql.types as T
 import pyspark.sql.functions as F
 import pyspark.sql as S
 
-import sys
-import os
-
-# This row allows importing modules from folders
-sys.path.append(os.path.abspath('/Workspace/Repos/andreas.forsberg@capgemini.com/mvp_ml_delivery'))
-
-from attributes_dir import attributes as A
-from common_dir import common
+from src.common_dir.common_functions import Common
+from src.attributes_dir import attributes as A
 
 #This is only needed for calling spark outside of Databriucks e.g when auto generating documenatation with Sphinx
-spark = common.Common.create_spark_session()
+spark = Common.create_spark_session()
 
 class DLT_Helper:
 

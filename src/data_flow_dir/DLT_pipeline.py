@@ -1,20 +1,12 @@
-import sys
-import os
-
-# This row allows importing modules from folders
-sys.path.append(os.path.abspath('/Workspace/Repos/andreas.forsberg@capgemini.com/mvp_ml_delivery'))
-
-from attributes_dir import attributes as A
-from common_dir import common
-#from help_function_dlt import DLT_Helper
-# import help_function_dlt
-
 import pyspark
 import pyspark.sql.types as T
 import dlt
 
+from src.attributes_dir import attributes as A
+from src.common_dir.common_functions import Common
+
 # This is only needed for calling spark outside of Databriucks e.g when auto generating documenatation with Sphinx
-spark = common.Common.create_spark_session()
+spark = Common.create_spark_session()
 
 # I have not succeded to put this function outside of this file. It seems to be a problem when calling a class/function and use it in a UDF when using DLT
 def _aggregate_reviews(review_scores_rating, review_scores_accuracy, review_scores_cleanliness, review_scores_checkin, review_scores_communication, review_scores_location, review_scores_value) -> float:
@@ -90,19 +82,5 @@ def medallion_silver_to_gold_dlt_transformation() -> pyspark.sql.dataframe.DataF
     """
 
     gold_df = dlt.read("silver_dlt_table").withColumn(A.AttributesAdded.aggregated_review_scores.name, _aggregate_reviews_udf(A.AttributesOriginal.review_scores_rating.name, A.AttributesOriginal.review_scores_accuracy.name, A.AttributesOriginal.review_scores_cleanliness.name, A.AttributesOriginal.review_scores_checkin.name, A.AttributesOriginal.review_scores_communication.name, A.AttributesOriginal.review_scores_location.name, A.AttributesOriginal.review_scores_value.name))
-
-    '''
-    # Change order of columns and put target last
-    cols = gold_df.columns
-
-    ordered_gold_df = gold_df.select([*cols])
-    
-    # Removing target feature if it is present
-    if A.AttributesTarget.price.name in cols:
-        cols.remove(A.AttributesTarget.price.name)
-
-        ordered_gold_df = gold_df.select([*cols, A.AttributesTarget.price.name])
-    else:
-        ordered_gold_df = gold_df.select([*cols])'''
 
     return gold_df

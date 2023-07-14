@@ -1,17 +1,11 @@
-import sys
-import os
-
-# This row allows importing modules from folders
-sys.path.append(os.path.abspath('/Workspace/Repos/andreas.forsberg@capgemini.com/mvp_ml_delivery'))
-
-from attributes_dir import attributes as A
-from common_dir import common
-
 import pyspark.sql.types as T
 import pyspark.sql.functions as F
 
+from src.common_dir.common_functions import Common
+from src.attributes_dir import attributes as A
+
 # This is only needed for calling spark outside of Databriucks e.g when auto generating documenatation with Sphinx
-spark = common.Common.create_spark_session()
+spark = Common.create_spark_session()
 
 try:
     # Verify that bronze df contains 11 rows
@@ -33,5 +27,3 @@ try:
     assert gold_df.filter(F.col(A.AttributesAdded.aggregated_review_scores.name) == 7).count() == 1
 except:
     raise Exception("Integration test fail due to length of gold dataframe is not as expected after aggregating review scores")
-
-gold_df.show()

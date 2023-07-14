@@ -2,20 +2,14 @@
 This file is only meant to be used for dlt_integration_test and not the daily pipeline.
 """
 
-import sys
-import os
-
-# This row allows importing modules from folders
-sys.path.append(os.path.abspath('/Workspace/Repos/andreas.forsberg@capgemini.com/mvp_ml_delivery'))
-
-from attributes_dir import attributes as A
-from common_dir import common
+from src.common_dir.common_functions import Common
+from src.attributes_dir import attributes as A
 
 import pyspark
 import dlt
 
 # This is only needed for calling spark outside of Databriucks e.g when auto generating documenatation with Sphinx
-spark = common.Common.create_spark_session()
+spark = Common.create_spark_session()
 
 @dlt.create_table(name="data_validation_gold_layer_dlt_integration_test", comment="Validates the data of the golding layer with expectations set to fail")
 @dlt.expect_all_or_fail({"host_is_superhost is not null": "host_is_superhost IS NOT NULL",

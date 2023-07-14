@@ -23,11 +23,10 @@ from evidently.metric_preset import DataDriftPreset
 import delta.tables as DT
 import pyspark.sql.types as T
 import pyspark.sql.functions as F
-
 from datetime import date
 
-from attributes_dir import attributes as A
-import inference_support as IS
+from src.common_dir.common_functions import Common
+from src.attributes_dir import attributes as A
 
 # COMMAND ----------
 
