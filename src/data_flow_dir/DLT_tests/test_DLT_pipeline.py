@@ -68,3 +68,7 @@ print(result.to_string())
 with open("authorization.txt") as my_file:
                 for line in my_file:
                     authorization = line
+
+# COMMAND ----------
+
+

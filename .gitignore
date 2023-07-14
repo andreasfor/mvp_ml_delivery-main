@@ -1,2 +1,2 @@
 .databricks
-*.txt
+src/data_flow_dir/DLT_tests/authorization.txt
