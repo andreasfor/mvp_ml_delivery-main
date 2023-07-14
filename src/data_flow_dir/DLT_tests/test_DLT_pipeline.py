@@ -62,3 +62,9 @@ result = MyTestFixture().execute_tests()
 print(result.to_string())
 # Comment out the next line (result.exit(dbutils)) to see the test result report from within the notebook
 # result.exit(dbutils)
+
+# COMMAND ----------
+
+with open("authorization.txt") as my_file:
+                for line in my_file:
+                    authorization = line
