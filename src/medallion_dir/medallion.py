@@ -1,3 +1,9 @@
+#import sys
+#import os
+
+# This row allows importing modules from folders
+#sys.path.append(os.path.abspath('/Workspace/Repos/andreas.forsberg@capgemini.com/mvp_ml_delivery'))
+
 import pyspark
 from pyspark.sql import SparkSession
 
@@ -5,10 +11,11 @@ import pyspark.sql.types as T
 import pyspark.sql as S
 import pyspark.sql.functions as F
 
-from medallion_dir import imedallion as IM
-from attributes_dir import attributes as A
-from common_dir import common as C
-from medallion_dir import support_functions as SF
+from src.medallion_dir import imedallion as IM
+from src.attributes_dir import attributes as A
+from src.common_dir import common_functions as C
+# from src.medallion_dir import support_functions as SF
+import src.medallion_dir.support_functions as SF
 
 
 class Medallion(IM.IMedallion):
@@ -72,13 +79,10 @@ class Medallion(IM.IMedallion):
         :rtype: S.dataframe.DataFrame
         """
 
-        #Create SparkSession, needed when using repos. Otherwise will not spark.udf.register work
-        spark = C.Common.create_spark_session()
-
         # Register an UDF. Need to do this version of registration when using UDFs in pyspark DLT pipelines and in repos
-        _aggregate_reviews_udf = F.udf(SF.aggregate_reviews, T.IntegerType()) 
+        _aggregate_reviews_udf = F.udf(SF._aggregate_reviews, T.DoubleType()) 
         
-        gold_df = silver_df.withColumn(A.AttributesAdded.aggregated_review_scores.name, _aggregate_reviews_udf(A.AttributesOriginal.review_scores_accuracy.name, A.AttributesOriginal.review_scores_cleanliness.name, A.AttributesOriginal.review_scores_checkin.name, A.AttributesOriginal.review_scores_communication.name, A.AttributesOriginal.review_scores_location.name, A.AttributesOriginal.review_scores_value.name))
+        gold_df = silver_df.withColumn(A.AttributesAdded.aggregated_review_scores.name, _aggregate_reviews_udf(A.AttributesOriginal.review_scores_rating.name, A.AttributesOriginal.review_scores_accuracy.name, A.AttributesOriginal.review_scores_cleanliness.name, A.AttributesOriginal.review_scores_checkin.name, A.AttributesOriginal.review_scores_communication.name, A.AttributesOriginal.review_scores_location.name, A.AttributesOriginal.review_scores_value.name))
 
         # Change order of columns and put target last
         cols = gold_df.columns

@@ -1,5 +1,5 @@
 class IncorrectSpecificationError(Exception):
     """
-    A custom error code. Test Remove this 
+    A custom error code.
     """
     pass

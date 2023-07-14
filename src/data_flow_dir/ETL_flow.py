@@ -1,15 +1,20 @@
 # Databricks notebook source
+#import os
+#import sys
+#sys.path.append(os.path.abspath('/Workspace/Repos/andreas.forsberg@capgemini.com/mvp_ml_delivery'))
+
 import pyspark.sql.types as T
 
-from attributes_dir import attributes as A
-from medallion_dir import medallion_factory as MF
-from medallion_dir import imedallion as IM
+from src.attributes_dir import attributes as A
+from src.medallion_dir import medallion_factory as MF
+from src.medallion_dir import imedallion as IM
 
-# THIS IS JUST A TEST, CAN I PUSH THIS ??? 
-# NEW COMMENTTTT
-# NEW COMMENTTTT
-# NEW COMMENTTTT
-# NEW COMMENTTTT
+#from attributes_dir import attributes as A
+#from medallion_dir import medallion_factory as MF
+#from medallion_dir import imedallion as IM
+
+# COMMAND ----------
+
 
 
 # COMMAND ----------
@@ -53,6 +58,10 @@ silver_df = medallion.imedallion_bronze_to_silver_transformation(bronze_df=bronz
 
 # COMMAND ----------
 
+silver_df.count()
+
+# COMMAND ----------
+
 # MAGIC %md
 # MAGIC # Gold (curated business-level tables)
 # MAGIC Performs aggregation of all the review scores
@@ -60,6 +69,10 @@ silver_df = medallion.imedallion_bronze_to_silver_transformation(bronze_df=bronz
 # COMMAND ----------
 
 gold_df = medallion.imedallion_silver_to_gold_transformation(silver_df=silver_df)
+
+# COMMAND ----------
+
+gold_df.count()
 
 # COMMAND ----------
 

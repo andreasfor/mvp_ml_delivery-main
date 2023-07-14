@@ -17,7 +17,7 @@ search_space_dct = {}
 search_space_dct["numTrees"] = {"start": 2, "end": 10, "q": 1}
 search_space_dct["maxDepth"] = {"start": 10, "end": 30, "q": 1}
 
-ML.train_model(data=data,run_name=run_name,num_evals=max_evals,search_space_dct=search_space_dct)
+ML.train_model(data_dct=data,run_name=run_name,num_evals=max_evals,search_space_dct=search_space_dct)
 
 # COMMAND ----------
 

@@ -1,5 +1,16 @@
 # Databricks notebook source
-import attributes
+import os
+import sys
+
+sys.path.append(os.path.abspath("../../../"))
+
+# COMMAND ----------
+
+import src.attributes_dir.attributes
+
+# COMMAND ----------
+
+
 
 # COMMAND ----------
 
@@ -293,3 +304,30 @@ gold_df.printSchema()
 
 {"host_is_superhost is str": "host_is_superhost IS NOT NULL",
 "type is not null": "type is not null"}
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC # Create test data
+# MAGIC Need to have Bedrooms and price
+
+# COMMAND ----------
+
+import pyspark.sql.types as T
+
+# COMMAND ----------
+
+T.DoubleType
+
+# COMMAND ----------
+
+
+df = spark.createDataFrame([(float(i%10),float(i%100)) for i in range(0,200)],T.StructType([T.StructField("bedrooms",T.DoubleType(),True),T.StructField("price",T.DoubleType(),True)]))
+
+# COMMAND ----------
+
+df.display()
+
+# COMMAND ----------
+
+

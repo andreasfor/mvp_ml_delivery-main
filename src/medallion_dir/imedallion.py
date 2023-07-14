@@ -7,7 +7,7 @@ sys.path.append(os.path.abspath('/Workspace/Repos/andreas.forsberg@capgemini.com
 from enum import Enum, auto
 import pyspark.sql as S
 
-class IMedallion:
+class IMedallion():
     """This class is the interface of the Medallion class. The main use for the interface is that we can hide functions from the end user.
 
     If a interface is published it should not be changed. Then we need to create a new one. In order to mitigate the risk of creating multiple interfaces, one can aim to create a more general interface. A more general interface has the downside of beeing harder to follow. 
