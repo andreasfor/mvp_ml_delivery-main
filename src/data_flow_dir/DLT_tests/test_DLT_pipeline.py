@@ -17,8 +17,14 @@ class MyTestFixture(NutterFixture):
 
             #This will trigger the job programmatically and then will we extract the run_id
 
-            my_json = {"job_id": "41409489135749"}    
-            auth = {"Authorization": "Bearer dapi9756c2d167c4ff39ccf50203c0f56fa4-2"}
+            # Storing my key in a file and using gitignore to not psuh it to GitHub 
+            with open("authorization.txt") as my_file:
+                for line in my_file:
+                    authorization = line
+
+            auth = {"Authorization": f"Bearer {authorization}"}
+
+            my_json = {"job_id": "41409489135749"}
             response = requests.post('https://adb-6677420654375794.14.azuredatabricks.net/api/2.0/jobs/run-now', json = my_json, headers=auth).json()
 
             # The run id should be placed here and to retreive the status of the job.
@@ -27,7 +33,7 @@ class MyTestFixture(NutterFixture):
             api_url = "https://adb-6677420654375794.14.azuredatabricks.net/api/2.0/jobs/runs/get"
 
             headers = {
-                "Authorization": "Bearer dapi9756c2d167c4ff39ccf50203c0f56fa4-2",
+                "Authorization": f"Bearer {auth}",
                 "Content-Type": "application/json"}
 
             run_id=str(response["run_id"])
@@ -56,7 +62,3 @@ result = MyTestFixture().execute_tests()
 print(result.to_string())
 # Comment out the next line (result.exit(dbutils)) to see the test result report from within the notebook
 # result.exit(dbutils)
-
-# COMMAND ----------
-
-
