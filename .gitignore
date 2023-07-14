@@ -1,2 +1,2 @@
 .databricks
-authorization/**
+src/authorization/**
