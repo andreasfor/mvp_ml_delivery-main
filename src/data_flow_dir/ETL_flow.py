@@ -32,7 +32,7 @@ bronze_df.count()
 
 # COMMAND ----------
 
-#bronze_df.display()
+bronze_df.display()
 
 # COMMAND ----------
 
@@ -47,6 +47,10 @@ silver_df = medallion.imedallion_bronze_to_silver_transformation(bronze_df=bronz
 # COMMAND ----------
 
 silver_df.count()
+
+# COMMAND ----------
+
+silver_df.display()
 
 # COMMAND ----------
 

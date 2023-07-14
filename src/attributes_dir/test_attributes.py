@@ -3,7 +3,7 @@ from runtime.nutterfixture import NutterFixture, tag
 
 class MyTestFixture(NutterFixture):
 
-    def assertion_import_basics(self):
+    def assertion_import_basics(self) -> None:
         """This test will just import the attributes module and check if it exists."""
 
         try:

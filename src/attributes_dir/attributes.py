@@ -4,7 +4,7 @@ class AttributesOriginal(Enum):
 
     """
     This class contains the original attribute names. 
-    The main reason for having strings as enum is that it limits the possibility for spelling mistakes.
+    The main reason for having strings as an enum is that it limits the possibility of spelling mistakes.
     """
     
     host_is_superhost = auto()

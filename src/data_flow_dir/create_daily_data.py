@@ -32,7 +32,7 @@ train_df, val_df, test_df = airbnb_df.randomSplit([.6, .2, .2], seed=42)
 
 # COMMAND ----------
 
-# Save data to be compred to daily distribution in order to measure the data drift
+# Save data to be compared to daily distribution in order to measure the data drift
 # this train data is based on spark.table(A.TableNames.gold_tbl) i.e. the table that the model was trained on 
 # train_df.write.format("delta").mode("overwrite").saveAsTable(A.TableNames.reference_data_data_drift_train_data_only)
 

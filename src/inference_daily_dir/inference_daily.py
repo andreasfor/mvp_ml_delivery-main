@@ -12,7 +12,7 @@ run_model_version
 
 # COMMAND ----------
 
-run_model_version = "runs:/a33aac06825542f58a1bef6c86468263/trained_pipeline"
+# run_model_version = "runs:/a33aac06825542f58a1bef6c86468263/trained_pipeline"
 
 # COMMAND ----------
 
@@ -44,7 +44,7 @@ inference_support = IS.InferenceSupportClass()
 
 # COMMAND ----------
 
-# Reading data from the previous task, i.e. the DLT pipeline 
+# Reading data from the previous task, i.e. the gold layer from the DLT pipeline 
 daily_df = spark.table("dlt.gold_dlt_table")
 
 reference_data_data_drift_df = spark.table(A.TableNames.reference_data_data_drift_train_data_only)

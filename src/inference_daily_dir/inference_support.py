@@ -11,7 +11,7 @@ from src.attributes_dir import attributes as A
 
 class InferenceSupportClass:
     """
-    This class contains supports functions used when doing inference. 
+    This class contains supports functions used when for doing inference. 
     """
 
     def merge_into_fn(self, temp_df) -> None:
