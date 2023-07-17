@@ -331,3 +331,87 @@ df.display()
 # COMMAND ----------
 
 
+
+# COMMAND ----------
+
+random_df = spark.table("default.test_dlt_combined_random_df")
+
+# COMMAND ----------
+
+random_df.display()
+
+# COMMAND ----------
+
+drop_na_random_df = random_df.dropDuplicates().dropna().filter( (F.col("cancellation_policy") != " ") & (F.col("cancellation_policy") != "") )
+
+# COMMAND ----------
+
+drop_na_random_df.display()
+
+# COMMAND ----------
+
+df_cols = drop_na_random_df.columns
+
+# COMMAND ----------
+
+for col in df_cols:
+    no_empty_str_df = drop_na_random_df.filter(F.col(col) != "")
+
+# COMMAND ----------
+
+no_empty_str_df.display()
+
+# COMMAND ----------
+
+
+
+# COMMAND ----------
+
+
+
+# COMMAND ----------
+
+from functools import reduce
+
+categorical_cols = [field for (field, dataType) in random_df.dtypes if dataType == "string"]
+
+# filter out rows with blank strings in all the columns
+no_space_df = cleaned_random_df.filter(reduce(lambda x, y: x & y, [(F.col(c) != ' ') & (F.col(c) != '') for c in categorical_cols]))
+
+# COMMAND ----------
+
+categorical_cols
+
+# COMMAND ----------
+
+
+
+# COMMAND ----------
+
+no_space_df.display()
+
+# COMMAND ----------
+
+cleaned_random_df.display()
+
+# COMMAND ----------
+
+import pyspark.sql.functions as F
+
+# COMMAND ----------
+
+cleaned_random_df.printSchema()
+
+# COMMAND ----------
+
+cleaned_random_df.filter( (F.col("cancellation_policy") != " ") & (F.col("cancellation_policy") != "") ).display()
+
+# COMMAND ----------
+
+def _trim_col(input_col) str:
+
+    
+
+    return float(aggregated_value)
+
+_aggregate_reviews_udf = spark.udf.register("_aggregate_reviews", _aggregate_reviews, returnType=T.StringType())

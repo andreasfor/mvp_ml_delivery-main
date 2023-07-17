@@ -1,3 +1,30 @@
+"""
+This notebook is for developing tests for a Databricks function called Delta Live Tables. These are a bit complicated at a first glance (but after a few experiments you will be fine) and so are the testing of them. Therefore, is there a few work arounds in this notebook.  
+1, You cannot run a DLT as a normal notebook. It needs to be run via workflows, which is a bit tedious when experimenting. There is a workaround for this problem; see package dlt_with_debug at link https://github.com/souvik-databricks/dlt-with-debug .
+2, You cannot run pip install without calling subprocess.
+3, You cannot run dlt-with-debug with table names, e.g. @dlt.create_table(name="bronze_dlt_table", ... ). It is therefore commented out. 
+"""
+
+import pyspark
+import subprocess
+import sys
+import os
+
+# Need to call subbprocess in order to call shell scripts in DLT 
+subprocess.check_call([sys.executable, "-m", "pip", "install", "dlt-with-debug"])
+
+from dlt_with_debug import dltwithdebug, pipeline_id, showoutput
+
+if pipeline_id:
+  import dlt
+else:
+  from dlt_with_debug import dlt
+
+
+from src.common_dir.common_functions import Common
+from src.attributes_dir import attributes as A
+from src.data_flow_dir.DLT_tests.help_function_dlt import DLT_Helper
+
 import pyspark
 import pyspark.sql.types as T
 import pyspark.sql.functions as F
@@ -38,11 +65,13 @@ def _aggregate_reviews(review_scores_rating, review_scores_accuracy, review_scor
 
 _aggregate_reviews_udf = spark.udf.register("_aggregate_reviews", _aggregate_reviews, returnType=T.DoubleType())
 
-@dlt.table(name="bronze_dlt_table", comment="Reading data from the internal database. Expect cancellation_policy and neighbourhood_cleansed to not be null. However, we are letting the data pass (since we use expect and not expect_or_drop/fail) but we are recording the data quality. The selected features are the two most important features according to the feature importance plot which is produced when training the Random Forest model for this particular problem. In addition, the current data pipeline, see silver transformation, will skip rows with null values anyway but the reasoning holds for what features that should not be null. Read more concerning expections at https://docs.databricks.com/delta-live-tables/expectations.html")
+@dlt.create_table()
+@dltwithdebug(globals())
+'''@dlt.table(name="bronze_dlt_table", comment="Reading data from the internal database. Expect cancellation_policy and neighbourhood_cleansed to not be null. However, we are letting the data pass (since we use expect and not expect_or_drop/fail) but we are recording the data quality. The selected features are the two most important features according to the feature importance plot which is produced when training the Random Forest model for this particular problem. In addition, the current data pipeline, see silver transformation, will skip rows with null values anyway but the reasoning holds for what features that should not be null. Read more concerning expections at https://docs.databricks.com/delta-live-tables/expectations.html")
 @dlt.expect("cancellation_policy_not_null", "cancellation_policy IS NOT NULL")
 @dlt.expect("cancellation_policy_empty_str", "cancellation_policy != ' ' ")
 @dlt.expect("neighbourhood_cleansed_not_null", "neighbourhood_cleansed IS NOT NULL")
-@dlt.expect("neighbourhood_cleansed_empty_str", "neighbourhood_cleansed != ' '")
+@dlt.expect("neighbourhood_cleansed_empty_str", "neighbourhood_cleansed != ' '")'''
 def medallion_raw_to_bronze_dlt_transformation() -> pyspark.sql.dataframe.DataFrame:
 
     """This function reads the raw data from source. This version reads from internal database and returns a bronze dataframe.
@@ -61,8 +90,9 @@ def medallion_raw_to_bronze_dlt_transformation() -> pyspark.sql.dataframe.DataFr
 
     return bronze_df
 
-
-@dlt.table(name="silver_dlt_table", comment="Cleaning data by dropping duplicates and nan values")
+@dlt.create_table()
+@dltwithdebug(globals())
+#@dlt.table(name="silver_dlt_table", comment="Cleaning data by dropping duplicates and nan values")
 def medallion_bronze_to_silver_dlt_transformation() -> pyspark.sql.dataframe.DataFrame:
     
     """
@@ -70,7 +100,7 @@ def medallion_bronze_to_silver_dlt_transformation() -> pyspark.sql.dataframe.Dat
 
     :return: pyspark.sql.dataframe.DataFrame
     """
-    
+
     # The filter function is a bandage used for the moment. It needs to be changed. 
     silver_df = dlt.read("bronze_dlt_table").dropDuplicates().dropna()
 
@@ -81,7 +111,9 @@ def medallion_bronze_to_silver_dlt_transformation() -> pyspark.sql.dataframe.Dat
 
     return no_space_silver_df
 
-@dlt.table(name="gold_dlt_table", comment="Aggregates review scores")
+@dlt.create_table()
+@dltwithdebug(globals())
+#@dlt.table(name="gold_dlt_table", comment="Aggregates review scores")
 def medallion_silver_to_gold_dlt_transformation() -> pyspark.sql.dataframe.DataFrame:
 
     """This function aggregates review scores of the silver dataframe and returns a gold dataframe.
@@ -89,6 +121,10 @@ def medallion_silver_to_gold_dlt_transformation() -> pyspark.sql.dataframe.DataF
     :return: pyspark.sql.dataframe.DataFrame
     """
 
-    gold_df = dlt.read("silver_dlt_table").withColumn(A.AttributesAdded.aggregated_review_scores.name, _aggregate_reviews_udf(A.AttributesOriginal.review_scores_rating.name, A.AttributesOriginal.review_scores_accuracy.name, A.AttributesOriginal.review_scores_cleanliness.name, A.AttributesOriginal.review_scores_checkin.name, A.AttributesOriginal.review_scores_communication.name, A.AttributesOriginal.review_scores_location.name, A.AttributesOriginal.review_scores_value.name))
+    gold_df = dlt.read(medallion_silver_to_gold_dlt_transformation).withColumn(A.AttributesAdded.aggregated_review_scores.name, _aggregate_reviews_udf(A.AttributesOriginal.review_scores_rating.name, A.AttributesOriginal.review_scores_accuracy.name, A.AttributesOriginal.review_scores_cleanliness.name, A.AttributesOriginal.review_scores_checkin.name, A.AttributesOriginal.review_scores_communication.name, A.AttributesOriginal.review_scores_location.name, A.AttributesOriginal.review_scores_value.name))
 
     return gold_df
+
+
+# See the output
+showoutput(medallion_raw_to_bronze_dlt_transformation)
