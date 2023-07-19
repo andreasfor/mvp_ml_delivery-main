@@ -1,2 +1,3 @@
 .databricks
-/authorization.txt
+/authorization_dlt.txt
+/authorization_adls.txt

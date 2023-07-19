@@ -18,7 +18,7 @@ class MyTestFixture(NutterFixture):
             #This will trigger the job programmatically and then will we extract the run_id
 
             # Storing my key in a file and using gitignore to not psuh it to GitHub 
-            with open("/Workspace/Repos/andreas.forsberg@capgemini.com/mvp_ml_delivery-main/authorization.txt") as my_file:
+            with open("/Workspace/Repos/andreas.forsberg@capgemini.com/mvp_ml_delivery-main/authorization_dlt.txt") as my_file:
                 for line in my_file:
                     authorization = line
 

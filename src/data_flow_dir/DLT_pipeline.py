@@ -70,8 +70,7 @@ def medallion_bronze_to_silver_dlt_transformation() -> pyspark.sql.dataframe.Dat
 
     :return: pyspark.sql.dataframe.DataFrame
     """
-    
-    # The filter function is a bandage used for the moment. It needs to be changed. 
+     
     silver_df = dlt.read("bronze_dlt_table").dropDuplicates().dropna()
 
     categorical_cols = [field for (field, dataType) in silver_df.dtypes if dataType == "string"]

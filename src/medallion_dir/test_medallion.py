@@ -31,11 +31,13 @@ class MyTestFixture(NutterFixture):
         except:
             assert False
     
-    def assertion_bronze_to_gold_medallion_component(self) -> None:
+    def assertion_bronze_from_RAW_INTERNAL_DATABASE_to_gold_medallion_component(self) -> None:
         """This test will use the Medallion component and read the raw data and convert it to gold. These tests are very similar to the DLT integration tests based on mock data.
            The data that is read is mock data"""
         
         try:
+            import json
+
             import pyspark.sql as S
             import pyspark.sql.types as T
             import pyspark.sql.functions as F
@@ -77,6 +79,54 @@ class MyTestFixture(NutterFixture):
 
         except:
             assert False
+
+        
+    def assertion_bronze_from_RAW_EXTERNAL_DATABASE_ADLS_to_gold_medallion_component(self) -> None:
+        """This test will use the Medallion component and read the raw data from the external database and convert it to gold.
+        The data that is read is mock data"""
+        
+        try:
+            import pyspark.sql as S
+            import pyspark.sql.types as T
+            import pyspark.sql.functions as F
+
+            from src.attributes_dir import attributes as A
+            import src.medallion_dir.medallion_factory as MF
+            import src.medallion_dir.imedallion as IM
+            import src.medallion_dir.support_functions as SF
+            from src.common_dir import common_functions as C
+
+            medallion = MF.MedallionFactory.create_or_get(
+                version = MF.MedallionFactory.Version.V1,
+                call = IM.IMedallion.Call.RAW_INTERNAL_DATABASE)
+
+            bronze_df = medallion.imedallion_read_adls_merge_raw_into_bronze_transformation(mnt_path="dbfs:/mnt/azure_data_lake/airbnb/test_airbnb_1.csv", test_mode=True)
+
+            # Verify that bronze df contains 22 rows
+            try:
+                assert bronze_df.count() == 22
+            except:
+                raise Exception("Test fail due to length of bronze dataframe is not as exptected")
+            
+            silver_df = medallion.imedallion_bronze_to_silver_transformation(bronze_df=bronze_df)
+
+            # Verify that silver df contain 2 row after removing duplicates and nan
+            try:
+                assert silver_df.count() == 2
+            except:
+                raise Exception("Test fail due to length of silver dataframe is not as expected after dropping rows with duplicates and nan values")
+
+            gold_df = medallion.imedallion_silver_to_gold_transformation(silver_df=silver_df)
+
+            # Verify that the aggreagted value from the UDF is 7 for 2 rows
+            try:
+                assert gold_df.filter(F.col(A.AttributesAdded.aggregated_review_scores.name) == 7).count() == 2
+            except:
+                raise Exception("Test fail due to length of gold dataframe is not as expected after aggregating review scores")
+
+        except:
+            assert False
+
     
 
 result = MyTestFixture().execute_tests()
