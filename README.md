@@ -22,7 +22,7 @@ If not mentioned otherwise, what was built is what was stated earlier. A blocker
 ### Data
 The data used for the project is the AirBnb San Fransisco and the purpose of the ML prediction is to predict the price.
 
-root
+`root
  |-- host_is_superhost: string
  |-- cancellation_policy: string
  |-- instant_bookable: string
@@ -46,7 +46,7 @@ root
  |-- review_scores_communication: double
  |-- review_scores_location: double
  |-- review_scores_value: double
- |-- price: double
+ |-- price: double`
 
 ### Autoloader and storing secrets in Azure Key Vault
 
