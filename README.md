@@ -63,15 +63,17 @@ Expectations for bronze layer is set to monitor but allow data:
 
 The medallion structure was developed according to a component based approach. However, be aware that this is not a real component in its essence. Due to its low re-usability. But it serves as an example of how to structure the interface, factory and main code (main code is just my name on where the majority of the program is run. I have not seen a specific name for that part). And, please ignore the Call saying RAW_INTERNAL_DATABASE, this will be changed in future. 
 
-```
+`
 medallion = MF.MedallionFactory.create_or_get(
                 version = MF.MedallionFactory.Version.V1,
                 call = IM.IMedallion.Call.RAW_INTERNAL_DATABASE)
 
 bronze_df = medallion.imedallion_read_adls_merge_raw_into_bronze_transformation(mnt_path=mnt_path, test_mode=test_mode)
-```
+`
 
 ### Testing
+
+![image](https://github.com/andreasfor/mvp_of_a_ml_delivery/assets/78473680/ccef368a-e5e8-4aee-92f1-619118eaf5af)
 
 All modules have tests implemented in Nutter. And not in PyTest Due to .... WRITE HERE
 
