@@ -102,7 +102,7 @@ Model drift:
 
 Here is a PDF how the dashboard looks like. The most important features according to me are the results of the unseen_data_passed_to_model (i.e. the rows that the model skipped in order to not brake due to not seen before), data_drift_df and model_drift_df.
 
-[interactive][https://github.com/your-username/your-repo/blob/master/my-pdf.pdf](https://github.com/andreasfor/mvp_of_a_ml_delivery/blob/master/daily_pred_dashboard_20_07_2023.pdf)[/interactive]
+[Dashboard PDF][https://github.com/your-username/your-repo/blob/master/my-pdf.pdf](https://github.com/andreasfor/mvp_of_a_ml_delivery/blob/master/daily_pred_dashboard_20_07_2023.pdf)[Dashboard PDF]
 
 
 
