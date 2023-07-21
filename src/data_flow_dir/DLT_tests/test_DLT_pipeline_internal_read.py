@@ -15,8 +15,6 @@ class MyTestFixture(NutterFixture):
             import json
             import time
 
-            #This will trigger the job programmatically and then will we extract the run_id
-
             # Storing my key in a file and using gitignore to not psuh it to GitHub 
             with open("/Workspace/Repos/andreas.forsberg@capgemini.com/mvp_ml_delivery-main/authorization_dlt.txt") as my_file:
                 for line in my_file:
@@ -24,10 +22,13 @@ class MyTestFixture(NutterFixture):
 
             auth = {"Authorization": f"Bearer {authorization}"}
 
+            # The job_id needs to be changed for each job
             my_json = {"job_id": "41409489135749"}
+
+            #This will trigger the job programmatically and then will we extract the run_id
             response = requests.post('https://adb-6677420654375794.14.azuredatabricks.net/api/2.0/jobs/run-now', json = my_json, headers=auth).json()
 
-            # The run id should be placed here and to retreive the status of the job.
+            # The run id is used to retreive the status of the job.
             # We are using a timer which will re-start untill we get a key called 'result_state'
 
             api_url = "https://adb-6677420654375794.14.azuredatabricks.net/api/2.0/jobs/runs/get"
@@ -65,6 +66,63 @@ print(result.to_string())
 
 # COMMAND ----------
 
-with open("/Workspace/Repos/andreas.forsberg@capgemini.com/mvp_ml_delivery-main/authorization.txt") as my_file:
+# MAGIC %md
+# MAGIC # Reproducing the error below
+# MAGIC Note that I get a 200 code back i.e. working and a 403 from .get i.e. not authorized.
+# MAGIC This test used to work and I have not changed anything. I need to talk to someone that are familiar with permissions in Azure and Databricks. 
+
+# COMMAND ----------
+
+import requests
+import json
+import time
+
+# Storing my key in a file and using gitignore to not psuh it to GitHub 
+with open("/Workspace/Repos/andreas.forsberg@capgemini.com/mvp_ml_delivery-main/authorization_dlt.txt") as my_file:
     for line in my_file:
         authorization = line
+
+auth = {"Authorization": f"Bearer {authorization}"}
+
+# The job_id needs to be changed for each job
+my_json = {"job_id": "41409489135749"}
+
+#This will trigger the job programmatically and then will we extract the run_id
+response = requests.post('https://adb-6677420654375794.14.azuredatabricks.net/api/2.0/jobs/run-now', json = my_json, headers=auth).json()
+
+# COMMAND ----------
+
+response = requests.post('https://adb-6677420654375794.14.azuredatabricks.net/api/2.0/jobs/run-now', json = my_json, headers=auth)
+
+# COMMAND ----------
+
+response.status_code
+
+# COMMAND ----------
+
+print(response.content)
+
+# COMMAND ----------
+
+response["run_id"]
+
+# COMMAND ----------
+
+api_url = "https://adb-6677420654375794.14.azuredatabricks.net/api/2.0/jobs/runs/get"
+
+headers = {
+    "Authorization": f"Bearer {auth}",
+    "Content-Type": "application/json"}
+
+run_id=str(response["run_id"])
+params = {"run_id": run_id}
+
+response = requests.get(api_url, headers=headers, params=params)
+
+# COMMAND ----------
+
+response.status_code
+
+# COMMAND ----------
+
+

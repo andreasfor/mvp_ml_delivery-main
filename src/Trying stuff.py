@@ -1,4 +1,17 @@
 # Databricks notebook source
+gold_df = spark.table("dlt_integration_test_external_read.gold_dlt_table")
+
+# COMMAND ----------
+
+gold_df.display()
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC -- DROP SCHEMA IF EXISTS  schema_name CASCADE
+
+# COMMAND ----------
+
 import os
 import sys
 

@@ -172,8 +172,10 @@ def mount_to_adls_fn() -> None:
     dbutils = _get_dbutils(spark)
 
     # Unmount the Blob storage if it's already mounted
-    # Comment out if it is the first time mounting
-    dbutils.fs.unmount(mount_point)
+    try:
+        dbutils.fs.unmount(mount_point)
+    except:
+        pass
 
     # Mount the Blob storage
     dbutils.fs.mount(

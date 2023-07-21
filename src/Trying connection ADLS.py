@@ -147,6 +147,18 @@ df.display()
 
 # COMMAND ----------
 
+test_mode = "true"
+
+# One can not set a boolan value as a task value in jobs, only strings
+#if test_mode == "true":
+#    test_mode = True
+
+# COMMAND ----------
+
+type(test_mode)
+
+# COMMAND ----------
+
 def extract_file_nm_of_last_upsert_fn(test_mode) -> str:
     """
     This function extracts the file name from the bronze table of the last upsert.
@@ -271,7 +283,7 @@ def mount_path_exists_fn(mnt_path) -> bool:
 
 # COMMAND ----------
 
-mount_path_exists_fn("dbfs:/mnt/azure_data_lake/airbnb/test_airbnb_1.csv")
+mount_path_exists_fn("dbfs:/mnt/azure_data_lake/airbnb/airbnb_1.csv")
 
 # COMMAND ----------
 
@@ -374,15 +386,23 @@ def read_adls_merge_into_bronze(mnt_path: str, test_mode: bool) -> None:
 
 # COMMAND ----------
 
-read_adls_merge_into_bronze(mnt_path="dbfs:/mnt/azure_data_lake/airbnb/test_airbnb_1.csv", test_mode = True)
+read_adls_merge_into_bronze(mnt_path="dbfs:/mnt/azure_data_lake/airbnb/airbnb_1.csv", test_mode = False)
 
 # COMMAND ----------
 
-adls_df = spark.table("default.test_adls_bronze_layer")
+adls_df = spark.table("default.adls_bronze_layer")
 
 # COMMAND ----------
 
 adls_df.display()
+
+# COMMAND ----------
+
+df = spark.table("dlt.gold_dlt_table")
+
+# COMMAND ----------
+
+df.display()
 
 # COMMAND ----------
 

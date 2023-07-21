@@ -4,6 +4,8 @@ from evidently.report import Report
 from evidently.metric_preset import DataDriftPreset
 import delta.tables as DT
 import pyspark.sql.types as T
+import pyspark.sql.functions as F
+import pyspark
 from datetime import date
 
 from src.common_dir.common_functions import Common
@@ -167,3 +169,59 @@ class InferenceSupportClass:
         )
 
         model_drift_df.write.format("delta").mode("overwrite").saveAsTable(A.TableNames.model_drift_df)
+
+    def cast_data_fn(self, daily_df) -> pyspark.sql.dataframe.DataFrame:
+        """
+        This function will act as a safeguard and cast the data into certain datatypes if they are not already of the specific data types that the model was trained on. This could for an example happen when we read CSV files from the Azure Data Lake Storage.
+
+        :param daily_df: Incoming data which is of gold standard and should be converted. 
+        :type daily_df: pyspark.sql.dataframe.DataFrame
+
+        :returns: A transformed dataframe with correct data types that corresponds to the training data 
+        :rtype: pyspark.sql.dataframe.DataFrame
+        """
+
+        daily_df_converted = daily_df.select(
+            F.col("host_is_superhost"),
+            F.col("cancellation_policy"),
+            F.col("instant_bookable"),
+            F.col("host_total_listings_count").cast("double"),
+            F.col("neighbourhood_cleansed"),
+            F.col("latitude").cast("double"),
+            F.col("longitude").cast("double"),
+            F.col("property_type"),
+            F.col("room_type"),
+            F.col("accommodates").cast("double"),
+            F.col("bathrooms").cast("double"),
+            F.col("bedrooms").cast("double"),
+            F.col("beds").cast("double"),
+            F.col("bed_type"),
+            F.col("minimum_nights").cast("double"),
+            F.col("number_of_reviews").cast("double"),
+            F.col("review_scores_rating").cast("double"),
+            F.col("review_scores_accuracy").cast("double"),
+            F.col("review_scores_cleanliness").cast("double"),
+            F.col("review_scores_checkin").cast("double"),
+            F.col("review_scores_communication").cast("double"),
+            F.col("review_scores_location").cast("double"),
+            F.col("review_scores_value").cast("double"),
+            F.col("aggregated_review_scores").cast("string"),
+            F.col("price").cast("double")
+        )
+
+        return daily_df_converted
+    
+    def subtract_review_score(self, daily_df) -> pyspark.sql.dataframe.DataFrame:
+        """
+        This function subtract the review_scores_rating with the aggregated score.  
+
+        :param daily_df: Incoming data which is of gold standard. 
+        :type daily_df: pyspark.sql.dataframe.DataFrame
+
+        :returns: A transformed dataframe with correct data types that corresponds to the training data 
+        :rtype: pyspark.sql.dataframe.DataFrame
+        """
+
+        daily_df_converted = daily_df.withColumn("aggregated_review_scores", F.col("aggregated_review_scores") - F.col("review_scores_rating"))
+
+        return daily_df_converted
