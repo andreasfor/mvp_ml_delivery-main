@@ -69,7 +69,6 @@ The medallion structure was developed according to a component based approach. H
 
 The ML model did not brake for unseen data due to it is trained as a pipeline and then called as a pipeline with transformers such as PySparks StringIndexer included into the pipeline.  
 
-`
 categorical_cols = [field for (
         field, dataType) in train_df.dtypes if dataType == "string"]
     index_output_cols = [x + "_Index" for x in categorical_cols]
@@ -88,7 +87,6 @@ vec_assembler = VectorAssembler(
 rf = RandomForestRegressor(labelCol="price", maxBins=40, seed=42)
 
 pipeline = Pipeline(stages=[string_indexer, vec_assembler, rf])
-`
 
 When this repo is not in private mode one can use this website to get to the documentation [view Sphinx docs](https://htmlpreview.github.io/)
 
