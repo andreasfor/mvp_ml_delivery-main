@@ -69,7 +69,7 @@ The medallion structure was developed according to a component based approach. H
 
 The ML model did not brake for unseen data due to it is trained as a pipeline and then called as a pipeline with transformers such as PySparks StringIndexer included into the pipeline.  
 
-categorical_cols = [field for (
+`categorical_cols = [field for (
         field, dataType) in train_df.dtypes if dataType == "string"]
     index_output_cols = [x + "_Index" for x in categorical_cols]
 
@@ -86,7 +86,26 @@ vec_assembler = VectorAssembler(
 
 rf = RandomForestRegressor(labelCol="price", maxBins=40, seed=42)
 
-pipeline = Pipeline(stages=[string_indexer, vec_assembler, rf])
+pipeline = Pipeline(stages=[string_indexer, vec_assembler, rf])`
+
+The health of the incomming data to the model and of the model i.e. data dricft and model drift was monitored by Evindently.
+
+Data drift:
+
+![image](https://github.com/andreasfor/mvp_of_a_ml_delivery/assets/78473680/198ae9b9-0c39-4ab0-91a6-416c62d80166)
+
+Model drift:
+
+![image](https://github.com/andreasfor/mvp_of_a_ml_delivery/assets/78473680/89d36d67-6b6c-4258-a5cf-e3c73d52bdaf)
+
+### Dashboard and alerters
+
+Here is a PDF how the dashboard looks like. The most important features according to me are the results of the unseen_data_passed_to_model (i.e. the rows that the model skipped in order to not brake due to not seen before), data_drift_df and model_drift_df.
+
+[interactive][https://github.com/your-username/your-repo/blob/master/my-pdf.pdf](https://github.com/andreasfor/mvp_of_a_ml_delivery/blob/master/daily_pred_dashboard_20_07_2023.pdf)[/interactive]
+
+
+
 
 When this repo is not in private mode one can use this website to get to the documentation [view Sphinx docs](https://htmlpreview.github.io/)
 
