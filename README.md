@@ -16,3 +16,6 @@ This should be built in Databricks, utilizing testing and a CI/CD approach with 
 
 ## What was actually built
 The data used for the project is the AirBnb San Fransisco. 
+
+[path](docs/build/html/index.html)
+
