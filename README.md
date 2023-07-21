@@ -65,6 +65,10 @@ The medallion structure was developed according to a component based approach. H
 
 ![image](https://github.com/andreasfor/mvp_of_a_ml_delivery/assets/78473680/ccef368a-e5e8-4aee-92f1-619118eaf5af)
 
+### Testing
+
+All modules have tests implemented in Nutter.
+
 ### ML model
 
 The ML model did not brake for unseen data due to it is trained as a pipeline and then called as a pipeline with transformers such as PySparks StringIndexer included into the pipeline.  
@@ -106,7 +110,7 @@ Here is a PDF how the dashboard looks like [Dashboard PDF](https://github.com/an
 
 As soon as data_drift_df and model_drift_df is changed to true is an alerter sent to my email.
 
-And of course the map because it is cool ^^. 
+And I need to mention the map because it is cool ^^. 
 
 ![image](https://github.com/andreasfor/mvp_of_a_ml_delivery/assets/78473680/dc4e2cea-9bc8-4493-9fcc-c0bbb075f0dd)
 
@@ -116,9 +120,21 @@ When this repo is not in private mode one can use this website to get to the doc
 
 ![image](https://github.com/andreasfor/mvp_of_a_ml_delivery/assets/78473680/a9561d2a-595d-42dc-b751-d12e57c21d35)
 
-Note to self, Sphinx did not appreciate how I refered to modules in Databricks and crashed. Databricks suggests to refer to modules in this way src.medallion_dir import medallion_factory as MF instead of having this ugly thing in the beginning of the notebook/file sys.path.append(os.path.abspath('/Workspace/Repos/andreas.forsberg@capgemini.com/mvp_ml_delivery')) and then call the module as from xxx import nnn as Y. When doing the first way, Sphinx crashed.
+Note to self, Sphinx did not appreciate how I referred to modules in Databricks and crashed. Databricks suggests referring to modules in this way: src.medallion_dir import medallion_factory as MF instead of having this ugly thing in the beginning of the notebook/file sys.path.append(os.path.abspath('/Workspace/Repos/andreas.forsberg@capgemini.com/mvp_ml_delivery')) and then call the module as from xxx import nnn as Y. When doing it the first way, Sphinx crashed.
 
-![image](https://github.com/andreasfor/mvp_of_a_ml_delivery/assets/78473680/5ccf405a-e7fd-405c-9764-052981604a82)
+## Future improvements
+
+Write about the IDE not really working and write about the Future improvements and order them. 
+
+			§ Träna om modell med 7 aggregerade värden
+			§ Lägg datan konverteringen i ETL pipeline
+			§ Kunna trigga DLT tester
+			§ Autoloader
+			§ Key Vault
+   
+Kunna pusha mellan dev, test och prod miljö!
+
+
 
 
 
