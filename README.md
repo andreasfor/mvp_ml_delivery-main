@@ -54,9 +54,11 @@ Due to not having admin rights, I could not use Autoloader or Azure Key Vault. T
 
 ### ETL Flow
 The ETL flow visualized as:
+
 ![image](https://github.com/andreasfor/mvp_of_a_ml_delivery/assets/78473680/45fd5fa6-915b-48a4-8eb3-1124356783ab)
 
 Expectations for bronze layer is set to monitor but allow data:
+
 ![image](https://github.com/andreasfor/mvp_of_a_ml_delivery/assets/78473680/60ac1b64-7c92-44b3-981e-fdbda380de11)
 
 
