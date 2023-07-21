@@ -90,7 +90,8 @@ vec_assembler = VectorAssembler(
 
 rf = RandomForestRegressor(labelCol="price", maxBins=40, seed=42)
 
-pipeline = Pipeline(stages=[string_indexer, vec_assembler, rf])`
+pipeline = Pipeline(stages=[string_indexer, vec_assembler, rf])
+`
 
 The health of the incomming data to the model and of the model i.e. data dricft and model drift was monitored by Evindently.
 
