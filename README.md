@@ -100,14 +100,25 @@ Model drift:
 
 ### Dashboard and alerters
 
-Here is a PDF how the dashboard looks like. The most important features according to me are the results of the unseen_data_passed_to_model (i.e. the rows that the model skipped in order to not brake due to not seen before), data_drift_df and model_drift_df.
+Here is a PDF how the dashboard looks like [Dashboard PDF](https://github.com/andreasfor/mvp_of_a_ml_delivery/blob/master/daily_pred_dashboard_20_07_2023.pdf). The most important features according to me are the results of the unseen_data_passed_to_model (i.e. the rows that the model skipped in order to not brake due to not seen before), data_drift_df and model_drift_df. 
 
-[Dashboard PDF](https://github.com/andreasfor/mvp_of_a_ml_delivery/blob/master/daily_pred_dashboard_20_07_2023.pdf)[Dashboard PDF]
+![image](https://github.com/andreasfor/mvp_of_a_ml_delivery/assets/78473680/69d7f6dc-0e51-46b7-8d71-1ceb9c8671b1)
 
+As soon as data_drift_df and model_drift_df is changed to true is an alerter sent to my email.
 
+And of course the map because it is cool ^^. 
 
+![image](https://github.com/andreasfor/mvp_of_a_ml_delivery/assets/78473680/dc4e2cea-9bc8-4493-9fcc-c0bbb075f0dd)
 
-When this repo is not in private mode one can use this website to get to the documentation [view Sphinx docs](https://htmlpreview.github.io/)
+### Documentation
+
+When this repo is not in private mode one can use this website to get to the documentation [view Sphinx docs](https://htmlpreview.github.io/). In the mean time, here is a sneak peak how the searchable website looks:
+
+![image](https://github.com/andreasfor/mvp_of_a_ml_delivery/assets/78473680/a9561d2a-595d-42dc-b751-d12e57c21d35)
+
+Note to self, Sphinx did not appreciate how I refered to modules in Databricks and crashed. Databricks suggests to refer to modules in this way src.medallion_dir import medallion_factory as MF instead of having this ugly thing in the beginning of the notebook/file sys.path.append(os.path.abspath('/Workspace/Repos/andreas.forsberg@capgemini.com/mvp_ml_delivery')) and then call the module as from xxx import nnn as Y. When doing the first way, Sphinx crashed.
+
+![image](https://github.com/andreasfor/mvp_of_a_ml_delivery/assets/78473680/5ccf405a-e7fd-405c-9764-052981604a82)
 
 
 
