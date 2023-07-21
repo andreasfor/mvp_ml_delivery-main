@@ -73,8 +73,6 @@ bronze_df = medallion.imedallion_read_adls_merge_raw_into_bronze_transformation(
 
 ### Testing
 
-![image](https://github.com/andreasfor/mvp_of_a_ml_delivery/assets/78473680/ccef368a-e5e8-4aee-92f1-619118eaf5af)
-
 All modules have tests implemented in Nutter. And not in PyTest Due to .... WRITE HERE
 
 ### ML model
