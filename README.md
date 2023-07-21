@@ -12,10 +12,60 @@ An ETL flow that reads from an external Azure Data Lake Storage Gen2 using a Dat
 
 In the same job but as another task, should the daily prediction be performed. The gold standard data is sent to the trained machine learning (ML) model, which makes daily predictions. The ML model should have a few requirements. One, it should not brake for new data or if new columns are sent to it. Two, the health of the incoming data and the model should be automatically monitored, and alerts should be sent as soon as a data or model drift occurs. The drifts are monitored with something called Evidently, which is open source. The predictions are saved in a table, and the insights from the table are visualized in a dashboard that updates daily. 
 
-This should be built in Databricks, utilizing testing and a CI/CD approach with three environments (DEV, TEST, PROD), be written in PySpark, and make use of a proper IDE. Visual Studio Code just recently launched a Databricks extension that I wanted to try out. In addition, I wanted to try something called Sphinx and Autodocstring, which are used for documentation. Sphinx produces a searchable web-based interface of your modules and functions, and Autodocstring produces a doc template for each function while coding. Explorative data analysis should be excluded.
+### Requirements
+This should be built in Databricks, utilizing testing and a CI/CD approach with three environments (DEV, TEST, PROD), be written in PySpark, and make use of a proper IDE. Visual Studio Code just recently launched a Databricks extension that I wanted to try out. In addition, I wanted to try something called Sphinx and Autodocstring, which are used for documentation. Sphinx produces a searchable web-based interface of your modules and functions, and Autodocstring produces a doc template for each function while coding. Explorative data analysis should be excluded. At least one of the modules should be written with a component oriented approach to show the foundations of how to do it. 
 
-## What was actually built
-The data used for the project is the AirBnb San Fransisco. 
+## Thoughts, learnings & what was actually built
 
-[path](docs/build/html/index.html)
+If not mentioned otherwise, what was built is what was stated earlier. A blocker for this project was that I was not the administrator of my Visual Studio Professional subscription, which implies that I do not have certain privileges. I will try to get admin rights in order to keep developing the project as intended. This led to several compromises, as will be described below.
+
+### Data
+The data used for the project is the AirBnb San Fransisco and the purpose of the ML prediction is to predict the price.
+
+root
+ |-- host_is_superhost: string
+ |-- cancellation_policy: string
+ |-- instant_bookable: string
+ |-- host_total_listings_count: double
+ |-- neighbourhood_cleansed: string
+ |-- latitude: double
+ |-- longitude: double
+ |-- property_type: string
+ |-- room_type: string
+ |-- accommodates: double
+ |-- bathrooms: double
+ |-- bedrooms: double
+ |-- beds: double
+ |-- bed_type: string
+ |-- minimum_nights: long
+ |-- number_of_reviews: long
+ |-- review_scores_rating: double
+ |-- review_scores_accuracy: double
+ |-- review_scores_cleanliness: double
+ |-- review_scores_checkin: double
+ |-- review_scores_communication: double
+ |-- review_scores_location: double
+ |-- review_scores_value: double
+ |-- price: double
+
+### Autoloader and storing secrets in Azure Key Vault
+
+Due to not having admin rights, I could not use Autoloader or Azure Key Vault. The implication of not using Autoloader is a more complex solution where I use an upsert with Merge Into instead and manually keep track of which files have been upserted earlier. Since I could not use Azure Key Vault, I did a poor man's version of it and stored my secrets in a txt file and used gitignore to not push these files.
+
+### ETL Flow
+
+![image](https://github.com/andreasfor/mvp_of_a_ml_delivery/assets/78473680/45fd5fa6-915b-48a4-8eb3-1124356783ab)
+
+
+
+
+
+
+
+
+
+When this repo is not in private mode one can use this website to get to the documentation [view Sphinx docs](https://htmlpreview.github.io/)
+
+
+
 
