@@ -73,7 +73,7 @@ All modules have tests implemented in Nutter.
 
 The ML model did not brake for unseen data due to it is trained as a pipeline and then called as a pipeline with transformers such as PySparks StringIndexer included into the pipeline.  
 
-`categorical_cols = [field for (
+```categorical_cols = [field for (
         field, dataType) in train_df.dtypes if dataType == "string"]
     index_output_cols = [x + "_Index" for x in categorical_cols]
 
@@ -91,7 +91,7 @@ vec_assembler = VectorAssembler(
 rf = RandomForestRegressor(labelCol="price", maxBins=40, seed=42)
 
 pipeline = Pipeline(stages=[string_indexer, vec_assembler, rf])
-`
+```
 
 The health of the incomming data to the model and of the model i.e. data dricft and model drift was monitored by Evindently.
 
