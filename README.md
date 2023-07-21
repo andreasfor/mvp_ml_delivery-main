@@ -61,12 +61,34 @@ Expectations for bronze layer is set to monitor but allow data:
 
 ![image](https://github.com/andreasfor/mvp_of_a_ml_delivery/assets/78473680/60ac1b64-7c92-44b3-981e-fdbda380de11)
 
+The medallion structure was developed according to a component based approach. However, be aware that this is not a real component in its essence. Due to its low re-usability. But it serves as an example of how to structure the interface, factory and main code (main code is just my name on where the majority of the program is run. I have not seen a specific name for that part). And, please ignore the Call saying RAW_INTERNAL_DATABASE, this will be changed in future. 
 
+![image](https://github.com/andreasfor/mvp_of_a_ml_delivery/assets/78473680/ccef368a-e5e8-4aee-92f1-619118eaf5af)
 
+### ML model
 
+The ML model did not brake for unseen data due to it is trained as a pipeline and then called as a pipeline with transformers such as PySparks StringIndexer included into the pipeline.  
 
+```
+categorical_cols = [field for (
+        field, dataType) in train_df.dtypes if dataType == "string"]
+    index_output_cols = [x + "_Index" for x in categorical_cols]
 
+string_indexer = StringIndexer(
+    inputCols=categorical_cols, outputCols=index_output_cols, handleInvalid="skip")
 
+numeric_cols = [field for (field, dataType) in train_df.dtypes if (
+    (dataType == "double") & (field != "price"))]
+
+assembler_inputs = index_output_cols + numeric_cols
+
+vec_assembler = VectorAssembler(
+    inputCols=assembler_inputs, outputCol="features")
+
+rf = RandomForestRegressor(labelCol="price", maxBins=40, seed=42)
+
+pipeline = Pipeline(stages=[string_indexer, vec_assembler, rf])
+```
 
 When this repo is not in private mode one can use this website to get to the documentation [view Sphinx docs](https://htmlpreview.github.io/)
 
