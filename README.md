@@ -199,5 +199,5 @@ Some useful links that I have com accrossed
 * AutoDocstring and Sphinx setting -  https://stackoverflow.com/questions/51591245/sphinx-and-autodocstring-from-vscode-with-python-code
 * Make sure all your dependent packages are installed on your computer
 * If you are using Windows use command .\make html
-The version showing in project is not complete. Due to one can not use this type of references from src.attributes_dir import attributes as A to a module (and this is the nicest way in Databricks Repos)![image](https://github.com/andreasfor/mvp_of_a_ml_delivery/assets/78473680/79d6095b-d1fd-48ce-ba38-705562a3dc88)
+The version showing in project is not complete. Due to one can not use this type of references from src.attributes_dir import attributes as A to a module (and this is the nicest way in Databricks Repos)
 
