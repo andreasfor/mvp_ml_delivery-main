@@ -3,7 +3,7 @@ The README file is written more like a diary with a touch of documentation at th
 
 
 """
-This method will be used to add two numbers
+	This method will be used to add two numbers
 
         :param int num1: The first number
         :param int num2: The second number
