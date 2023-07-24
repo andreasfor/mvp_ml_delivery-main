@@ -1,17 +1,6 @@
 # mvp_of_a_ml_deliver
 The README file is written more like a diary with a touch of documentation at the moment. Where I can sum up my thoughts and what I have learned.
 
-
-"""
-	
- This method will be used to add two numbers
-
-        :param int num1: The first number
-        :param int num2: The second number
-        :returns: The sum of two numbers
-        :rtype: int
-"""
-
 ## Aim of the project
 The aim of the project was twofold. First, to try a bunch of methods, tools, approaches, techniques, you name it, that I have come across during my first year as a consultant but perhaps have not had the chance to try until now.
 The time cap was roughly three weeks, so I want to emphasize that nothing in this project is exhaustive; it is more of a quick sneak peak.
@@ -140,14 +129,15 @@ When this repo is not in private mode one can use this website to get to the doc
 
 One needs to order the doc string according to the following:
 
-`
-This method will be used to add two numbers
+"""
+	
+ This method will be used to add two numbers
 
         :param int num1: The first number
         :param int num2: The second number
         :returns: The sum of two numbers
         :rtype: int
- `
+"""
 
 Note to self, Sphinx did not appreciate how I referred to modules in Databricks and crashed. Databricks suggests referring to modules in this way: src.medallion_dir import medallion_factory as MF instead of having this ugly thing in the beginning of the notebook/file sys.path.append(os.path.abspath('/Workspace/Repos/andreas.forsberg@capgemini.com/mvp_ml_delivery')) and then call the module as from xxx import nnn as Y. When doing it the first way, Sphinx crashed.
 
