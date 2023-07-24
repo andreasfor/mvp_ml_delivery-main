@@ -136,8 +136,6 @@ One needs to order the doc string according to the following:
         :rtype: int
  """
  `
-![image](https://github.com/andreasfor/mvp_of_a_ml_delivery/assets/78473680/721ee3ac-8794-43e6-948d-fa1be75d3f5b)
-
 
 Note to self, Sphinx did not appreciate how I referred to modules in Databricks and crashed. Databricks suggests referring to modules in this way: src.medallion_dir import medallion_factory as MF instead of having this ugly thing in the beginning of the notebook/file sys.path.append(os.path.abspath('/Workspace/Repos/andreas.forsberg@capgemini.com/mvp_ml_delivery')) and then call the module as from xxx import nnn as Y. When doing it the first way, Sphinx crashed.
 
