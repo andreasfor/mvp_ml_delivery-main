@@ -71,9 +71,9 @@ medallion = MF.MedallionFactory.create_or_get(
 bronze_df = medallion.imedallion_read_adls_merge_raw_into_bronze_transformation(mnt_path=mnt_path, test_mode=test_mode)
 ```
 
-### Testing
+### Testing & IDE
 
-All modules have tests implemented in Nutter. And not in PyTest Due to .... WRITE HERE
+All modules have tests implemented using the Nutter test framework and code written in Databricks UI. However, the initial goal was to develop the code in a proper IDE such as Visual Studio Code and utilize the new Databricks Connection extension, which makes it possible to use the Databricks clusters and storage remotely. But because I did not have admin rights, the Databricks Connection extension did not work as intended. Therefore, most code and tests were developed in Databricks UI.
 
 ### ML model
 
@@ -127,22 +127,77 @@ When this repo is not in private mode one can use this website to get to the doc
 
 ![image](https://github.com/andreasfor/mvp_of_a_ml_delivery/assets/78473680/a9561d2a-595d-42dc-b751-d12e57c21d35)
 
+One needs to order the doc string according to the following:
+
+`"""This method will be used to add two numbers
+        :param int num1: The first number
+        :param int num2: The second number
+        :returns: The sum of two numbers
+        :rtype: int
+ """
+ `
+![image](https://github.com/andreasfor/mvp_of_a_ml_delivery/assets/78473680/721ee3ac-8794-43e6-948d-fa1be75d3f5b)
+
+
 Note to self, Sphinx did not appreciate how I referred to modules in Databricks and crashed. Databricks suggests referring to modules in this way: src.medallion_dir import medallion_factory as MF instead of having this ugly thing in the beginning of the notebook/file sys.path.append(os.path.abspath('/Workspace/Repos/andreas.forsberg@capgemini.com/mvp_ml_delivery')) and then call the module as from xxx import nnn as Y. When doing it the first way, Sphinx crashed.
+
+### CI/CD
+
+The time was not enough to manage to implement a CI/CD pipeline with automated test included in the pipeline when pushing code. 
 
 ## Future improvements
 
-Write about the IDE not really working and write about the Future improvements and order them. 
+The future improvements should be investigated in the following order.
 
-			§ Träna om modell med 7 aggregerade värden
-			§ Lägg datan konverteringen i ETL pipeline
-			§ Kunna trigga DLT tester
-			§ Autoloader
-			§ Key Vault
-   
-Kunna pusha mellan dev, test och prod miljö!
+* Implement a CI/CD pipeline with automated tests with Azure DevOps
+* Key Vault
+* Autoloader
+* Put the data converter, which is currently in the inference notebook, in the ETL pipeline
+* Re-train the model with 7 aggregated values from reviews instead of 6 (this was a small mistake)
+* Programmatically trigger and test DLT. (almost working, it is some permission that is bothering)
 
+## Links 
 
+Some useful links that I have com accrossed
 
+### DLT
 
+* A few arguments why to use DLT - https://www.databricks.com/blog/2023/04/14/how-we-performed-etl-one-billion-records-under-1-delta-live-tables.html
+* Implement DLT with python syntax - https://docs.databricks.com/delta-live-tables/tutorial-python.html
+* In generall a good video explaning DLT - https://www.youtube.com/watch?v=MZd2MgM5JFY
 
+### Databricks extension with VS Code
+
+* How to set it up - https://www.youtube.com/watch?app=desktop&v=tSb8eXxvRWs
+* How to set it up 2 - https://www.youtube.com/watch?v=Quh1TuJQurA
+* Run "Workflow" if you want to run a notebook
+
+### Pytest in VS Code
+
+* Introductory Tutorial on Unit Testing Python Functions with Pytest, Visual Studio Code - https://www.youtube.com/watch?v=UMgxJvozR5A
+* I can run PyTest in VS Code but I can not run code via my Databricks cluster. I think I need to enable Unity Catalog and then I need premisson from some Admin user - https://www.youtube.com/watch?v=B0Ox7jdoPNQ
+* An then follow this guide to allow debugging.dbconnect https://learn.microsoft.com/en-us/azure/databricks/dev-tools/vscode-ext#databricks-connect
+
+### Testing with Nutter
+
+* Nutter is a testing framework built by Microsoft for Databricks, which makes it really easy to implement
+* Note that the test cases are executed in alphabetic order 
+* The tests written in this project are written accoring to regression testing i.e. they can be re-run and will show the same results. Therefore do I mainly use assertion_test and not run_test so often
+* All parts of the project have tests, however, non are complete (tests can never be complete but they can be more or less comprehensive). These are more to show the concept. Some of the tests are very simple, see test for attributes and some tests are more advanced e.g. tests for Delta Live Tables in data_flow_dir and test for machine learning.
+* https://github.com/microsoft/nutter
+
+### DLT testing
+
+* Implementing data validation by using DLT expectations (this is the recommended way) i.e. not e.g. pytests (DLT is not supported by Visual Studio Code extension 2023-07-10) - https://www.databricks.com/blog/applying-software-development-devops-best-practices-delta-live-table-pipelines 
+* I added tests which applies the unit testing approach based on a mock dataframe and Nutter
+	* These tests do not not work atm, the Job API must have been updated and is throwing an error when trying to use the get command
+
+### Documentation with Sphinx
+
+* https://towardsdatascience.com/documenting-python-code-with-sphinx-554e1d6c4f6d
+* https://stackoverflow.com/questions/74787850/generating-documentation-for-multiple-folders-with-sphinx
+* AutoDocstring and Sphinx setting -  https://stackoverflow.com/questions/51591245/sphinx-and-autodocstring-from-vscode-with-python-code
+* Make sure all your dependent packages are installed on your computer
+* If you are using Windows use command .\make html
+The version showing in project is not complete. Due to one can not use this type of references from src.attributes_dir import attributes as A to a module (and this is the nicest way in Databricks Repos)![image](https://github.com/andreasfor/mvp_of_a_ml_delivery/assets/78473680/79d6095b-d1fd-48ce-ba38-705562a3dc88)
 
