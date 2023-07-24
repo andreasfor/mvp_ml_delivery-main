@@ -130,9 +130,13 @@ When this repo is not in private mode one can use this website to get to the doc
 One needs to order the doc string according to the following:
 
 `"""This method will be used to add two numbers
+
         :param int num1: The first number
+
         :param int num2: The second number
+	
         :returns: The sum of two numbers
+	
         :rtype: int
  """
  `
