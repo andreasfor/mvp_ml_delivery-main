@@ -155,8 +155,8 @@ The future improvements should be investigated in the following order.
 * Put the data converter, which is currently in the inference notebook, in the ETL pipeline
 * Re-train the model with 7 aggregated values from reviews instead of 6 (this was a small mistake)
 * Programmatically trigger and test DLT. (almost working, it is some permission that is bothering)
-	* https://community.databricks.com/t5/data-engineering/configuring-the-databricks-jobapis-and-i-get-error-403-user-not/td-p/11002
- 		* https://stackoverflow.com/questions/63686132/error-403-user-not-authorized-when-trying-to-access-azure-databricks-api-through 	 
+- https://community.databricks.com/t5/data-engineering/configuring-the-databricks-jobapis-and-i-get-error-403-user-not/td-p/11002
+- https://stackoverflow.com/questions/63686132/error-403-user-not-authorized-when-trying-to-access-azure-databricks-api-through 	 
 
 ## Links 
 
