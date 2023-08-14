@@ -50,7 +50,7 @@ The data used for the project is the AirBnb San Fransisco and the purpose of the
 
 ### Autoloader and storing secrets in Azure Key Vault
 
-Due to not having admin rights, I could not use Autoloader or Azure Key Vault. The implication of not using Autoloader is a more complex solution where I use an upsert with Merge Into instead and manually keep track of which files have been upserted earlier. Since I could not use Azure Key Vault, I did a poor man's version of it and stored my secrets in a txt file and used gitignore to not push these files.
+Due to not having Azure admin rights (Your administrator has disabled the App registrations experience in the Azure portal), I could not use Autoloader or Azure Key Vault. The implication of not using Autoloader is a more complex solution where I use an upsert with Merge Into instead and manually keep track of which files have been upserted earlier. Since I could not use Azure Key Vault, I did a poor man's version of it and stored my secrets in a txt file and used gitignore to not push these files.
 
 ### ETL Flow
 The ETL flow visualized as:
