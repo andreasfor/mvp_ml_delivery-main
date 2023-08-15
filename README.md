@@ -120,7 +120,7 @@ Here is a PDF how the dashboard looks like [Dashboard PDF](https://github.com/an
 
 ### Documentation
 
-When this repo is not in private mode one can use this website to get to the documentation [view Sphinx docs](https://htmlpreview.github.io/). In the mean time, here is a sneak peak how the searchable website looks:
+Here is a sneak peak how the searchable website looks (borrowed image):
 
 ![image](docs/readme_imgs/sphinx_docs.png)
 Image from [link](https://towardsdatascience.com/documenting-python-code-with-sphinx-554e1d6c4f6d)
