@@ -1,5 +1,5 @@
 # mvp_of_a_ml_deliver
-The README file is written more like a diary with a touch of documentation at the moment. Where I can sum up my thoughts and what I have learned of the assignment at VCC and from my Databricks certifications in spark, data engineering and machine learning. Please note that due to not having Azure admin rights (Your administrator has disabled the App registrations experience in the Azure portal), I could not use Autoloader, Azure Key Vault or trigger jobs via Job API.
+The README file is written more like a diary with a touch of documentation at the moment. Where I can sum up my thoughts and what I have learned. Please note that due to not having Azure admin rights (Your administrator has disabled the App registrations experience in the Azure portal), I could not use Autoloader, Azure Key Vault or trigger jobs via Job API.
 
 
 REEEEEEEEEEMOVEEEEEEEE
@@ -13,7 +13,7 @@ The second aim of the project was to produce a project that a junior colleague c
 ## What I was trying to build
 An ETL flow that reads from an external Azure Data Lake Storage Gen2 using a Databricks function called Autoloader while storing secrets in Azure Key Vault. Once the data is read from the source, it is currated through the medallion structure of bronze to gold. The ETL flow is built with Delta Live Tables (DLT) of which you can easily monitor the health of your incoming data by setting expectations. This ETL flow should be encapsulated by a job, which can be set to a schedule.
 
-In the same job but as another task, should the daily prediction be performed. The gold standard data is sent to the trained machine learning (ML) model, which makes daily predictions. The ML model should have a few requirements. One, it should not brake for new data or if new columns are sent to it. Two, the health of the incoming data and the model should be automatically monitored, and alerts should be sent as soon as a data or model drift occurs. The drifts are monitored with something called Evidently, which is open source. Three, the model should be trained with Hyperopt, which is a Baysian optimization algorithm that speeds up training (risk of getting into local optima). The predictions are saved in a table, and the insights from the table are visualized in a dashboard that updates daily. 
+In the same job but as another task, should the daily prediction be performed. The gold standard data is sent to the trained machine learning (ML) model, which makes daily predictions. The ML model should have a few requirements. One, it should not brake for new data or if new columns are sent to it. Two, the health of the incoming data and the model should be automatically monitored, and alerts should be sent as soon as a data or model drift occurs. The drifts are monitored with something called Evidently, which is open source. The predictions are saved in a table, and the insights from the table are visualized in a dashboard that updates daily. 
 
 ### Requirements
 This should be built in Databricks, utilizing testing and a CI/CD approach with three environments (DEV, TEST, PROD), be written in PySpark, and make use of a proper IDE. Visual Studio Code just recently launched a Databricks extension that I wanted to try out. In addition, I wanted to try something called Sphinx and Autodocstring, which are used for documentation. Sphinx produces a searchable web-based interface of your modules and functions, and Autodocstring produces a doc template for each function while coding. Explorative data analysis should be excluded. At least one of the modules should be written with a component oriented approach to show the foundations of how to do it. 
@@ -158,10 +158,8 @@ The future improvements should be investigated in the following order.
 * Put the data converter, which is currently in the inference notebook, in the ETL pipeline
 * Re-train the model with 7 aggregated values from reviews instead of 6 (this was a small mistake)
 * Programmatically trigger and test DLT. (almost working, it is some permission that is bothering)
-	* https://community.databricks.com/t5/data-engineering/configuring-the-databricks-jobapis-and-i-get-error-403-user-not/td-p/11002
-	* https://stackoverflow.com/questions/63686132/error-403-user-not-authorized-when-trying-to-access-azure-databricks-api-through
-* Put model into production (i.e. shift the status in Models registry)
-  
+- https://community.databricks.com/t5/data-engineering/configuring-the-databricks-jobapis-and-i-get-error-403-user-not/td-p/11002
+- https://stackoverflow.com/questions/63686132/error-403-user-not-authorized-when-trying-to-access-azure-databricks-api-through 	 
 
 ## Links 
 
