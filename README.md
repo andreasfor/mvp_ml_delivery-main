@@ -116,15 +116,7 @@ Model drift:
 
 ### Dashboard and alerters
 
-Here is a PDF how the dashboard looks like [Dashboard PDF](https://github.com/andreasfor/mvp_of_a_ml_delivery/blob/master/daily_pred_dashboard_20_07_2023.pdf). The most important features according to me are the results of the unseen_data_passed_to_model (i.e. the rows that the model skipped in order to not brake due to not seen before), data_drift_df and model_drift_df. 
-
-![image](https://github.com/andreasfor/mvp_of_a_ml_delivery/assets/78473680/69d7f6dc-0e51-46b7-8d71-1ceb9c8671b1)
-
-As soon as data_drift_df and model_drift_df is changed to true is an alerter sent to my email.
-
-And I need to mention the map because it is cool ^^. 
-
-![image](https://github.com/andreasfor/mvp_of_a_ml_delivery/assets/78473680/dc4e2cea-9bc8-4493-9fcc-c0bbb075f0dd)
+Here is a PDF how the dashboard looks like [Dashboard PDF](https://github.com/andreasfor/mvp_of_a_ml_delivery/blob/master/daily_pred_dashboard_20_07_2023.pdf). The most important features according to me are the results of the unseen_data_passed_to_model (i.e. the rows that the model skipped in order to not brake due to not seen before), data_drift_df and model_drift_df. As soon as data_drift_df and model_drift_df is changed to true is an alerter sent to my email.
 
 ### Documentation
 
