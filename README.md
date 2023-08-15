@@ -4,9 +4,6 @@ The README file is written more like a diary with a touch of documentation at th
 
 REEEEEEEEEEMOVEEEEEEEE
 
-
-REEEEEEEEEEMOVEEEEEEEE
-
 ## Aim of the project
 The aim of the project was twofold. First, to try a bunch of methods, tools, approaches, techniques, you name it, that I have come across during my first year as a consultant but perhaps have not had the chance to try until now.
 The time cap was roughly three weeks, so I want to emphasize that nothing in this project is exhaustive; it is more of a quick sneak peak.
