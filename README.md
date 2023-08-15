@@ -61,7 +61,7 @@ Job tasks visualized as:
 
 ![image](docs/readme_imgs/daily_ingest_and_pred_EXTERNAL_READ.png)
 
-Expectations for gold layer is set to not allow compromized data:
+Expectations for gold layer is set to not allow compromized data (seen as task DLT_data_validation above):
 
 ![image](docs/readme_imgs/data_validation_dlt_gold.png)
 
