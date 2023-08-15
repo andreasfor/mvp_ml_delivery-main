@@ -83,7 +83,8 @@ All modules have tests implemented using the Nutter test framework and code writ
 
 The ML model did not brake for unseen data due to it is trained as a pipeline and then called as a pipeline with transformers such as PySparks StringIndexer included into the pipeline.  
 
-```categorical_cols = [field for (
+```
+categorical_cols = [field for (
         field, dataType) in train_df.dtypes if dataType == "string"]
     index_output_cols = [x + "_Index" for x in categorical_cols]
 
