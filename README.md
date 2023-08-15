@@ -1,6 +1,8 @@
 # mvp_of_a_ml_deliver
 The README file is written more like a diary with a touch of documentation at the moment. Where I can sum up my thoughts and what I have learned of the assignment at VCC and from my Databricks certifications in spark, data engineering and machine learning. Please note that due to not having Azure admin rights (Your administrator has disabled the App registrations experience in the Azure portal), I could not use Autoloader, Azure Key Vault or trigger jobs via Job API.
 
+REMOVVVVVEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+
 ## Aim of the project
 The aim of the project was twofold. First, to try a bunch of methods, tools, approaches, techniques, you name it, that I have come across during my first year as a consultant but perhaps have not had the chance to try until now.
 The time cap was roughly three weeks, so I want to emphasize that nothing in this project is exhaustive; it is more of a quick sneak peak.
