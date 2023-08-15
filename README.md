@@ -57,7 +57,7 @@ The DLT flow visualized as:
 
 ![image](docs/readme_imgs/dlt_pipeline.png)
 
-Job tasks visualized as (where the first task is the DLT flow from brobze to gold):
+Job tasks visualized as:
 
 ![image](docs/readme_imgs/daily_ingest_and_pred_EXTERNAL_READ.png)
 
