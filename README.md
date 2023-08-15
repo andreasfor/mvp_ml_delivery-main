@@ -81,7 +81,7 @@ All modules have tests implemented using the Nutter test framework and code writ
 
 ### ML model
 
-The ML model did not brake for unseen data due to it is trained as a pipeline and then called as a pipeline with transformers such as PySparks StringIndexer included into the pipeline.  
+The ML model did not brake for unseen data due to it is trained as a pipeline and then called as a pipeline with transformers such as PySparks StringIndexer included into the pipeline and the where the parameter handleInvalid = skip and ignores unseen data. The unseen data is later visualized in the dashboard in order to give an inidcation if the model needs to be re-trained to better match the incoming data.
 
 ```
 categorical_cols = [field for (
