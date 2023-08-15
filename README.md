@@ -1,5 +1,8 @@
 # mvp_of_a_ml_deliver
-The README file is written more like a diary with a touch of documentation at the moment. Where I can sum up my thoughts and what I have learned of the assignment at VCC and from my Databricks certifications in spark, data engineering and machine learning.. Please note that due to not having Azure admin rights (Your administrator has disabled the App registrations experience in the Azure portal), I could not use Autoloader, Azure Key Vault or trigger jobs via Job API.
+The README file is written more like a diary with a touch of documentation at the moment. Where I can sum up my thoughts and what I have learned. Please note that due to not having Azure admin rights (Your administrator has disabled the App registrations experience in the Azure portal), I could not use Autoloader, Azure Key Vault or trigger jobs via Job API.
+
+
+REEEEEEEEEEMOVEEEEEEEE
 
 
 REEEEEEEEEEMOVEEEEEEEE
