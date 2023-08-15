@@ -55,11 +55,15 @@ Due to not having Azure admin rights (Your administrator has disabled the App re
 ### ETL Flow
 The ETL flow visualized as:
 
-![image](https://github.com/andreasfor/mvp_of_a_ml_delivery/assets/78473680/45fd5fa6-915b-48a4-8eb3-1124356783ab)
+![image](docs/readme_imgs/dlt_pipeline.png)
 
-Expectations for bronze layer is set to monitor but allow data:
+Job tasks visualized as:
 
-![image](https://github.com/andreasfor/mvp_of_a_ml_delivery/assets/78473680/60ac1b64-7c92-44b3-981e-fdbda380de11)
+![image](docs/readme_imgs/daily_ingest_and_pred_EXTERNAL_READ.png)
+
+Expectations for gold layer is set to not allow compromized data:
+
+![image](docs/readme_imgs/data_validation_dlt_gold.png)
 
 The medallion structure was developed according to a component based approach. However, be aware that this is not a real component in its essence. Due to its low re-usability. But it serves as an example of how to structure the interface, factory and main code (main code is just my name on where the majority of the program is run. I have not seen a specific name for that part). And, please ignore the Call saying RAW_INTERNAL_DATABASE, this will be changed in future. 
 
@@ -103,11 +107,11 @@ The health of the incomming data to the model and of the model i.e. data dricft 
 
 Data drift:
 
-![image](https://github.com/andreasfor/mvp_of_a_ml_delivery/assets/78473680/198ae9b9-0c39-4ab0-91a6-416c62d80166)
+![image](docs/readme_imgs/data_drift.png)
 
 Model drift:
 
-![image](https://github.com/andreasfor/mvp_of_a_ml_delivery/assets/78473680/89d36d67-6b6c-4258-a5cf-e3c73d52bdaf)
+![image](docs/readme_imgs/model_drift.png)
 
 ### Dashboard and alerters
 
@@ -125,7 +129,8 @@ And I need to mention the map because it is cool ^^.
 
 When this repo is not in private mode one can use this website to get to the documentation [view Sphinx docs](https://htmlpreview.github.io/). In the mean time, here is a sneak peak how the searchable website looks:
 
-![image](https://github.com/andreasfor/mvp_of_a_ml_delivery/assets/78473680/a9561d2a-595d-42dc-b751-d12e57c21d35)
+![image](docs/readme_imgs/sphinx_docs.png)
+Image from [link](https://towardsdatascience.com/documenting-python-code-with-sphinx-554e1d6c4f6d)
 
 One needs to order the doc string according to the following:
 
