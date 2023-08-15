@@ -53,11 +53,11 @@ The data used for the project is the AirBnb San Fransisco and the purpose of the
 Due to not having Azure admin rights (Your administrator has disabled the App registrations experience in the Azure portal), I could not use Autoloader or Azure Key Vault. The implication of not using Autoloader is a more complex solution where I use an upsert with Merge Into instead and manually keep track of which files have been upserted earlier. Since I could not use Azure Key Vault, I did a poor man's version of it and stored my secrets in a txt file and used gitignore to not push these files.
 
 ### ETL Flow
-The ETL flow visualized as:
+The DLT flow visualized as:
 
 ![image](docs/readme_imgs/dlt_pipeline.png)
 
-Job tasks visualized as:
+Job tasks visualized as (where the first task is the DLT flow from brobze to gold):
 
 ![image](docs/readme_imgs/daily_ingest_and_pred_EXTERNAL_READ.png)
 
