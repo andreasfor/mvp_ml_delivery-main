@@ -50,7 +50,7 @@ The data used for the project is the AirBnb San Fransisco and the purpose of the
 
 ### Autoloader and storing secrets in Azure Key Vault
 
-Due to not having Azure admin rights (Your administrator has disabled the App registrations experience in the Azure portal), I could not use Autoloader. The implication of not using Autoloader is a more complex solution where I use an upsert with Merge Into instead and manually keep track of which files have been upserted earlier. I tried to versions of storing secrets, one where I store my secrets in a txt file and use gitignore to not push these files (a poor man's version of a key vault). I also tried out how to actually store secrets in a notebook called try key vault, see links in the end of this file for more information how to set it up.
+Due to not having Azure admin rights (Your administrator has disabled the App registrations experience in the Azure portal), I could not use Autoloader. The implication of not using Autoloader is a more complex solution where I use an upsert with Merge Into instead and manually keep track of which files have been upserted earlier. I tried two versions of storing secrets, one where I store my secrets in a txt file and use gitignore to not push these files (a poor man's version of a key vault). I also tried out how to actually store secrets in a notebook called try key vault, see links in the end of this file for more information how to set it up.
 
 ### ETL Flow
 The DLT flow visualized as:
@@ -81,7 +81,7 @@ All modules have tests implemented using the Nutter test framework and code writ
 
 ### ML model
 
-The ML model did not brake for unseen data due to it is trained as a pipeline and then called as a pipeline with transformers such as PySparks StringIndexer included into the pipeline and the where the parameter handleInvalid = skip and ignores unseen data. The unseen data is later visualized in the dashboard in order to give an inidcation if the model needs to be re-trained to better match the incoming data.
+The ML model did not brake for unseen data due to it is trained as a pipeline and then called as a pipeline with transformers such as PySparks StringIndexer included into the pipeline and the where the parameter handleInvalid = skip and ignores unseen data. The unseen data is later visualized in the dashboard in order to give an indication if the model needs to be re-trained to better match the incoming data.
 
 ```
 categorical_cols = [field for (
