@@ -1,5 +1,5 @@
 # mvp_of_a_ml_deliver
-The README file is written more like a diary with a touch of documentation at the moment. Where I can sum up my thoughts and what I have learned of the assignment at VCC and from my Databricks certifications in spark, data engineering and machine learning. Please note that due to not having Azure admin rights (Your administrator has disabled the App registrations experience in the Azure portal), I could not use Autoloader, Azure Key Vault or trigger jobs via Job API.
+The README file is written more like a diary with a touch of documentation at the moment. Where I can sum up my thoughts and what I have learned of the assignment at VCC and from my Databricks certifications in spark, data engineering and machine learning. Please note that due to not having Azure admin rights (Your administrator has disabled the App registrations experience in the Azure portal), I could not use Autoloader or trigger jobs via Job API.
 
 ## Aim of the project
 The aim of the project was twofold. First, to try a bunch of methods, tools, approaches, techniques, you name it, that I have come across during my first year as a consultant but perhaps have not had the chance to try until now.
@@ -50,7 +50,7 @@ The data used for the project is the AirBnb San Fransisco and the purpose of the
 
 ### Autoloader and storing secrets in Azure Key Vault
 
-Due to not having Azure admin rights (Your administrator has disabled the App registrations experience in the Azure portal), I could not use Autoloader or Azure Key Vault. The implication of not using Autoloader is a more complex solution where I use an upsert with Merge Into instead and manually keep track of which files have been upserted earlier. Since I could not use Azure Key Vault, I did a poor man's version of it and stored my secrets in a txt file and used gitignore to not push these files.
+Due to not having Azure admin rights (Your administrator has disabled the App registrations experience in the Azure portal), I could not use Autoloader. The implication of not using Autoloader is a more complex solution where I use an upsert with Merge Into instead and manually keep track of which files have been upserted earlier. I tried to versions of storing secrets, one where I store my secrets in a txt file and use gitignore to not push these files (a poor man's version of a key vault). I also tried out how to actually store secrets in a notebook called try key vault, see links in the end of this file for more information how to set it up.
 
 ### ETL Flow
 The DLT flow visualized as:
@@ -148,7 +148,6 @@ The time was not enough to manage to implement a CI/CD pipeline with automated t
 The future improvements should be investigated in the following order.
 
 * Implement a CI/CD pipeline with automated tests with Azure DevOps
-* Key Vault
 * Autoloader
 * Put the data converter, which is currently in the inference notebook, in the ETL pipeline
 * Re-train the model with 7 aggregated values from reviews instead of 6 (this was a small mistake)
@@ -200,4 +199,10 @@ Some useful links that I have com accrossed
 * Make sure all your dependent packages are installed on your computer
 * If you are using Windows use command .\make html
 The version showing in project is not complete. Due to one can not use this type of references from src.attributes_dir import attributes as A to a module (and this is the nicest way in Databricks Repos)
+
+### Azure Key Vault and Databricks Secrets
+* How to create an Azure Key Vault Azure Key Vault Tutorial: https://www.youtube.com/watch?v=xchSkmHDL0c
+* Terrible video but he shows how to access the secrets in Databricks: https://www.youtube.com/watch?v=ul4Gqehas0w
+	* Should go url that look something like this https://adb-xxxxxxxxxxxxxxxxxx.azuredatabricks.net/?o=xxxxxxxxxxxxx#secrets/createScope![image](https://github.com/andreasfor/mvp_of_a_ml_delivery/assets/78473680/b776d220-8057-402f-a844-a0bd2c19b32a)
+
 
