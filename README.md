@@ -77,7 +77,7 @@ bronze_df = medallion.imedallion_read_adls_merge_raw_into_bronze_transformation(
 
 ### Testing & IDE
 
-All modules have tests implemented using the Nutter test framework and code written in Databricks UI. However, the initial goal was to develop the code in a proper IDE such as Visual Studio Code and utilize the new Databricks Connection extension, which makes it possible to use the Databricks clusters and storage remotely. But because I did not have admin rights, the Databricks Connection extension did not work as intended. Therefore, most code and tests were developed in Databricks UI.
+All modules have tests implemented using the Nutter test framework and code written in Databricks UI. However, the initial goal was to develop the code in a proper IDE such as Visual Studio Code and utilize the new Databricks Connection extension, which makes it possible to use the Databricks clusters and storage remotely. But because I did not have admin rights at the time, the Databricks Connection extension did not work as intended. Therefore, most code and tests were developed in Databricks UI.
 
 ### ML model
 
@@ -137,7 +137,7 @@ One needs to order the doc string according to the following:
         :rtype: int
 """
 
-Note to self, Sphinx did not appreciate how I referred to modules in Databricks and crashed. Databricks suggests referring to modules in this way: src.medallion_dir import medallion_factory as MF instead of having this ugly thing in the beginning of the notebook/file sys.path.append(os.path.abspath('/Workspace/Repos/andreas.forsberg@capgemini.com/mvp_ml_delivery')) and then call the module as from xxx import nnn as Y. When doing it the first way, Sphinx crashed.
+Note to self, Sphinx did not appreciate how I referred to modules in Databricks and crashed. Databricks suggests referring to modules in this way: src.medallion_dir import medallion_factory as MF instead of having this ugly thing in the beginning of the notebook/file sys.path.append(os.path.abspath('/Workspace/Repos/andreas.forsberg@capgemini.com/mvp_ml_delivery')) and then call the module as from xxx import nnn as Y. When doing it the first way, Sphinx crashed. But in order to be able to run the program in e.g. VS Code it is better to use the the second way. Otherwise will the IDE not find the path. 
 
 ### CI/CD
 
@@ -169,13 +169,12 @@ Some useful links that I have come across.
 
 * How to set it up - https://www.youtube.com/watch?app=desktop&v=tSb8eXxvRWs
 * How to set it up 2 - https://www.youtube.com/watch?v=Quh1TuJQurA
-* Run "Workflow" if you want to run a notebook
+* Run "Workflow" if you want to run a notebook or run as file but then use show() instead of display()
 
 ### Pytest in VS Code
 
 * Introductory Tutorial on Unit Testing Python Functions with Pytest, Visual Studio Code - https://www.youtube.com/watch?v=UMgxJvozR5A
-* I can run PyTest in VS Code but I can not run code via my Databricks cluster. I think I need to enable Unity Catalog and then I need premisson from some Admin user - https://www.youtube.com/watch?v=B0Ox7jdoPNQ
-* An then follow this guide to allow debugging.dbconnect https://learn.microsoft.com/en-us/azure/databricks/dev-tools/vscode-ext#databricks-connect
+* I can run PyTest in VS Code but I can not run code via my Databricks cluster. Better to write Nutter test
 
 ### Testing with Nutter
 
