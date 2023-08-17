@@ -157,7 +157,7 @@ The future improvements should be investigated in the following order.
 
 ## Links 
 
-Some useful links that I have com accrossed
+Some useful links that I have come across.
 
 ### DLT
 
