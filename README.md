@@ -143,6 +143,8 @@ Note to self, Sphinx did not appreciate how I referred to modules in Databricks 
 
 The time was not enough to manage to implement a CI/CD pipeline with automated test included in the pipeline when pushing code. 
 
+This Youtube [video](https://www.youtube.com/watch?v=f2XQMFod8kg) shows how to set up CI/CD pipeline in Github Actions. However, I did not have the Azure permissions needed in order to follow the video.
+
 ## Future improvements
 
 The future improvements should be investigated in the following order.
