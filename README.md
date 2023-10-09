@@ -147,7 +147,7 @@ A simple but not optimal solution (since it can only push code and not DLT or Jo
 * To have three environments, all connected to the same repo. 
 * Each environment should be locked to one branch, e.g. Dev env only access dev branch.
   * Every time a push happens, all tests run automatically. 
-* One can also limit the possibilitiy for an Databricks environment to not allow permission for comitting and pushing code i.e . If we have that on test end prod env, the only way of altering the code would be to run the workflow manually on e.g Github.
+* One can also limit the possibilitiy for an Databricks environment to not allow permission for comitting and pushing code i.e . If we have that on test and prod env, the only way of altering the code would be to run the workflow manually on e.g Github.
 	* Test and prod branches should have pull_request only. Only a few persons should beeing able to review amd approve code. 
 
 This Youtube [video](https://www.youtube.com/watch?v=f2XQMFod8kg) shows how to set up CI/CD proper pipeline in Github Actions. However, I did not have the Azure permissions needed in order to follow the video.
