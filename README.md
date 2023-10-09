@@ -77,7 +77,7 @@ bronze_df = medallion.imedallion_read_adls_merge_raw_into_bronze_transformation(
 
 ### Testing & IDE
 
-All modules have tests implemented using the Nutter test framework and code written in Databricks UI. However, the initial goal was to develop the code in a proper IDE such as Visual Studio Code and utilize the new Databricks Connection extension, which makes it possible to use the Databricks clusters and storage remotely. But because I did not have admin rights at the time, the Databricks Connection extension did not work as intended. Therefore, most code and tests were developed in Databricks UI.
+All modules have tests implemented using the Nutter test framework and code written in Databricks UI. However, the initial goal was to develop the code in a proper IDE such as Visual Studio Code and utilize the new Databricks Connection extension, which makes it possible to use the Databricks clusters and storage remotely. But because I did not have access to Unity Catalog at the time, the Databricks Connection extension did not work as intended. Therefore, most code and tests were developed in Databricks UI.
 
 ### ML model
 
