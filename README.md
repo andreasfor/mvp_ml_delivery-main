@@ -144,13 +144,15 @@ Note to self, Sphinx did not appreciate how I referred to modules in Databricks 
 The time was not enough to manage to implement a CI/CD pipeline with automated tests. However, I read up on what CI/CD really mean and looked into both Azure Devops and Github Actions. The more I learned about the topic, the more I realized this is a whole profession in itself. But I feel much more comfortable talking and possibly setting requirements for a CI/CD pipeline in a future project.
 
 A simple but not optimal solution (since it can only push code and not DLT or Jobs) could be:
-* To have three environments, all connected to the same repo. 
+Solution 1,
+* To have three Databricks environments, all connected to the same repo. 
 * Each environment should be locked to one branch, e.g. Dev env only access dev branch.
-  * Every time a push happens, all tests run automatically. 
-* One can also limit the possibilitiy for an Databricks environment to not allow permission for comitting and pushing code i.e . If we have that on test and prod env, the only way of altering the code would be to run the workflow manually on e.g Github.
-	* Test and prod branches should have pull_request only. Only a few persons should beeing able to review amd approve code. 
+  * Every time a push happens to main, all tests run automatically. 
+* One can also limit the possibilitiy for an Databricks environment to not allow permission for comitting and pushing code i.e. if we have that on test and prod env, the only way of altering the code would be to run the workflow manually on e.g Github.	
+	* Test and prod branches should have pull_request only. Only a few persons should beeing able to review amd approve code.
+ * When someone wants to release code to Test env, create a GitHub Release and push that release to Test env
 
-This Youtube [video](https://www.youtube.com/watch?v=f2XQMFod8kg) shows how to set up CI/CD proper pipeline in Github Actions. However, I did not have the Azure permissions needed in order to follow the video.
+This Youtube [video](https://www.youtube.com/watch?v=f2XQMFod8kg) shows how to set up CI/CD proper pipeline in Github Actions for a ML project in Databricks. However, I did not have the Azure permissions needed in order to follow the video.
 
 ## Future improvements
 
