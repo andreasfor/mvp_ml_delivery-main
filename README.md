@@ -151,7 +151,9 @@ Solution 1,
 * One can also limit the possibilitiy for an Databricks environment to not allow permission for comitting and pushing code i.e. if we have that on test and prod env, the only way of altering the code would be to run the workflow manually on e.g Github.	
 	* Test and prod branches should have pull_request only. Only a few persons should beeing able to review amd approve code.
  * When someone wants to release code to Test env, create a GitHub Release and push that release to Test env
-
+-----------------------
+UPDATE: Check out Databricks Asset Bundles in order to push infrastructure as code in an easy way, such as DLT or Jobs. The same argument holds as above but now it works with pushing infra as well. 
+-----------------------
 This Youtube [video](https://www.youtube.com/watch?v=f2XQMFod8kg) shows how to set up CI/CD proper pipeline in Github Actions for a ML project in Databricks. However, I did not have the Azure permissions needed in order to follow the video.
 
 ## Future improvements
