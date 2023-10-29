@@ -141,18 +141,23 @@ Note to self, Sphinx did not appreciate how I referred to modules in Databricks 
 
 ### CI/CD
 
-The time was not enough to manage to implement a CI/CD pipeline with automated tests. However, I read up on what CI/CD really mean and looked into both Azure Devops and Github Actions. The more I learned about the topic, the more I realized this is a whole profession in itself. But I feel much more comfortable talking and possibly setting requirements for a CI/CD pipeline in a future project.
+The time was not enough to manage to implement a CI/CD pipeline with automated tests. However, I read up on what CI/CD really mean and looked into both Azure Devops and Github Actions. But I feel much more comfortable talking and possibly setting requirements for a CI/CD pipeline in a future project.
 
 A simple but not optimal solution (since it can only push code and not DLT or Jobs) could be:
 Solution 1,
-* To have three Databricks environments, all connected to the same repo. 
-* Each environment should be locked to one branch, e.g. Dev env only access dev branch.
+* To have one Databricks workspace (environment), with three folders, all connected to the same repo. 
+* Each folder should be locked to one branch, e.g. Dev env only access dev branch.
   * Every time a push happens to main, all tests run automatically. 
-* One can also limit the possibilitiy for an Databricks environment to not allow permission for comitting and pushing code i.e. if we have that on test and prod env, the only way of altering the code would be to run the workflow manually on e.g Github.	
+* One can also limit the possibilitiy for an Databricks folder to not allow permission for comitting and pushing code i.e. if we have that on test and prod env, the only way of altering the code would be to run the workflow manually on e.g Github.	
 	* Test and prod branches should have pull_request only. Only a few persons should beeing able to review amd approve code.
  * When someone wants to release code to Test env, create a GitHub Release and push that release to Test env
------------------------
-UPDATE: Check out Databricks Asset Bundles in order to push infrastructure as code in an easy way, such as DLT or Jobs. The same argument holds as above but now it works with pushing infra as well. 
+
+Solution 2,
+* To have three Databricks workspaces (environments), this will increase the sequrity. All connected to the same repo.
+* The same logic follows as in solution 2 but one can push job, DLTs and infra as code via Databricks Asset Bundles which can be added into the workflow of GitHub Actions.
+
+For both solutions, make sure to check out GitHub Releases. Then you can easility create a release version of your code and tag it. That tag can then be pushed to Test or Prod env and you can easily revert back to earlier releases.  
+
 -----------------------
 This Youtube [video](https://www.youtube.com/watch?v=f2XQMFod8kg) shows how to set up CI/CD proper pipeline in Github Actions for a ML project in Databricks. However, I did not have the Azure permissions needed in order to follow the video.
 
