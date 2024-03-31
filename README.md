@@ -1,11 +1,11 @@
 # mvp_of_a_ml_deliver
-The README file is written more like a diary with a touch of documentation at the moment. Where I can sum up my thoughts and what I have learned of the assignment at the client and from my Databricks certifications in spark, data engineering and machine learning. Please note that due to not having Azure admin rights (Your administrator has disabled the App registrations experience in the Azure portal), I could not use Autoloader or trigger jobs via Job API.
+The README file is written more like a diary with a touch of documentation at the moment. Where I can sum up my thoughts and what I have learned from my Databricks certifications in spark, data engineering and machine learning. Please note that due to not having Azure admin rights (Your administrator has disabled the App registrations experience in the Azure portal), I could not use Autoloader or trigger jobs via Job API.
 
 ## Aim of the project
-The aim of the project was twofold. First, to try a bunch of methods, tools, approaches, techniques, you name it, that I have come across during my first year as a consultant but perhaps have not had the chance to try until now.
+The aim of the project was twofold. First, to try a bunch of methods, tools, approaches, techniques, you name it, that I have come across, but perhaps have not had the chance to try until now.
 The time cap was roughly three weeks, so I want to emphasize that nothing in this project is exhaustive; it is more of a quick sneak peak.
 
-The second aim of the project was to produce a project that a junior colleague could easily follow so they could see what an end-to-end minimal viable product of a machine learning delivery may look like. At the same time, be of sufficient quality to a senior Data Scientist/AI Architect, a senior Data Engineer and a Databricks Champion. The term sufficient here means, if they were to open up this project at a client for the first time, they would say, "OK, maybe not how I would have done it. But, OK" and accept it, rather than chase perfection. In short, for this project, simplicity is rated higher than perfection. At the moment the second aim is down prioritized due to time.
+The second aim of the project was to produce a project that a junior colleague could easily follow so they could see what an end-to-end minimal viable product of a machine learning delivery may look like. In short, for this project, simplicity is rated higher than perfection.
 
 ## What I was trying to build
 An ETL flow that reads from an external Azure Data Lake Storage Gen2 using a Databricks function called Autoloader while storing secrets in Azure Key Vault. Once the data is read from the source, it is currated through the medallion structure of bronze to gold. The ETL flow is built with Delta Live Tables (DLT) of which you can easily monitor the health of your incoming data by setting expectations. This ETL flow should be encapsulated by a job, which can be set to a schedule.
@@ -50,7 +50,7 @@ The data used for the project is the AirBnb San Fransisco and the purpose of the
 
 ### Autoloader and storing secrets in Azure Key Vault
 
-Due to not having Azure admin rights (Your administrator has disabled the App registrations experience in the Azure portal), I could not use Autoloader. The implication of not using Autoloader is a more complex solution where I use an upsert with Merge Into instead and manually keep track of which files have been upserted earlier. I tried two versions of storing secrets, one where I store my secrets in a txt file and use gitignore to not push these files (a poor man's version of a key vault). I also tried out how to actually store secrets in a notebook called try key vault, see links in the end of this file for more information how to set it up.
+Due to not having Azure admin rights (Your administrator has disabled the App registrations experience in the Azure portal), I could not use Autoloader. The implication of not using Autoloader is a more complex solution where I use an upsert with Merge Into instead and manually keep track of which files have been upserted earlier. I tried two versions of storing secrets, one where I store my secrets in a txt file and use gitignore to not push these files (a poor man's version of a key vault). I also show how to actually store secrets in a key vault, see links in the end of this file for more information how to set it up.
 
 ### ETL Flow
 The DLT flow visualized as:
@@ -65,7 +65,7 @@ Expectations for gold layer is set to not allow compromized data (seen as task D
 
 ![image](docs/readme_imgs/data_validation_dlt_gold.png)
 
-The medallion structure was developed according to a component based approach. However, be aware that this is not a real component in its essence. Due to its low re-usability among other things. But it serves as an example of how to structure the interface, factory and main code (main code is just my name on where the majority of the program is run. I have not seen a specific name for that part). And, please ignore the Call saying RAW_INTERNAL_DATABASE, this will be changed in future. 
+The medallion structure was developed according to a component based approach. However, be aware that this is not a real component in its essence. Due to its low re-usability among other things. But it serves as an example of how to structure the interface, factory and main code (main code is just my name on where the majority of the program is run). And, please ignore the Call saying RAW_INTERNAL_DATABASE, this will be changed in future. 
 
 ```
 medallion = MF.MedallionFactory.create_or_get(
@@ -104,7 +104,7 @@ rf = RandomForestRegressor(labelCol="price", maxBins=40, seed=42)
 pipeline = Pipeline(stages=[string_indexer, vec_assembler, rf])
 ```
 
-The health of the incomming data to the model and of the model i.e. data dricft and model drift was monitored by Evindently.
+The health of the incomming data to the model and from the model i.e. data drift and model drift was monitored by Evindently.
 
 Data drift:
 
@@ -136,8 +136,6 @@ One needs to order the doc string according to the following:
         :returns: The sum of two numbers
         :rtype: int
 """
-
-Note to self, Sphinx did not appreciate how I referred to modules in Databricks and crashed. Databricks suggests referring to modules in this way: src.medallion_dir import medallion_factory as MF instead of having this ugly thing in the beginning of the notebook/file sys.path.append(os.path.abspath('/Workspace/Repos/andreas.forsberg@capgemini.com/mvp_ml_delivery')) and then call the module as from xxx import nnn as Y. When doing it the first way, Sphinx crashed. But in order to be able to run the program in e.g. VS Code it is better to use the the second way. Otherwise will the IDE not find the path. 
 
 ### CI/CD
 
