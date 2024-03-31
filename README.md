@@ -139,7 +139,7 @@ One needs to order the doc string according to the following:
 
 ### CI/CD
 
-The time was not enough to manage to implement a CI/CD pipeline with automated tests. However, I read up on what CI/CD really mean and looked into both Azure Devops and Github Actions. But I feel much more comfortable talking and possibly setting requirements for a CI/CD pipeline in a future project.
+The time was not enough to manage to implement a CI/CD pipeline with automated tests.
 
 A simple but not optimal solution (since it can only push code and not DLT or Jobs) could be:
 Solution 1,
@@ -147,23 +147,23 @@ Solution 1,
 * Each folder should be locked to one branch, e.g. Dev env only access dev branch.
   * Every time a push happens to main, all tests run automatically. 
 * One can also limit the possibilitiy for an Databricks folder to not allow permission for comitting and pushing code i.e. if we have that on test and prod env, the only way of altering the code would be to run the workflow manually on e.g Github.	
-	* Test and prod branches should have pull_request only. Only a few persons should beeing able to review amd approve code.
+	* Test and prod branches should have pull_request only. Only a few persons should beeing able to review and approve code.
  * When someone wants to release code to Test env, create a GitHub Release and push that release to Test env
 
 Solution 2,
 * To have three Databricks workspaces (environments), this will increase the sequrity. All connected to the same repo.
-* The same logic follows as in solution 2 but one can push job, DLTs and infra as code via Databricks Asset Bundles which can be added into the workflow of GitHub Actions.
+* The same logic follows as in solution 1 but one can push job, DLTs and infra as code via Databricks Asset Bundles which can be added into the workflow of GitHub Actions.
 
 For both solutions, make sure to check out GitHub Releases. Then you can easility create a release version of your code and tag it. That tag can then be pushed to Test or Prod env and you can easily revert back to earlier releases.  
 
 -----------------------
-This Youtube [video](https://www.youtube.com/watch?v=f2XQMFod8kg) shows how to set up CI/CD proper pipeline in Github Actions for a ML project in Databricks. However, I did not have the Azure permissions needed in order to follow the video.
+This Youtube [video](https://www.youtube.com/watch?v=f2XQMFod8kg) shows how to set up a proper CI/CD pipeline in Github Actions for a ML project in Databricks. However, I did not have the Azure permissions needed in order to follow the video.
 
 ## Future improvements
 
 The future improvements should be investigated in the following order.
 
-* Implement a CI/CD pipeline with automated tests with Azure DevOps
+* Implement a CI/CD pipeline with automated tests
 * Autoloader
 * Put the data converter, which is currently in the inference notebook, in the ETL pipeline
 * Re-train the model with 7 aggregated values from reviews instead of 6 (this was a small mistake)
@@ -218,6 +218,6 @@ The version showing in project is not complete. Due to one can not use this type
 ### Azure Key Vault and Databricks Secrets
 * How to create an Azure Key Vault Azure Key Vault Tutorial: https://www.youtube.com/watch?v=xchSkmHDL0c
 * Terrible video but he shows how to access the secrets in Databricks: https://www.youtube.com/watch?v=ul4Gqehas0w
-	* Should go url that look something like this https://adb-xxxxxxxxxxxxxxxxxx.azuredatabricks.net/?o=xxxxxxxxxxxxx#secrets/createScope![image](https://github.com/andreasfor/mvp_of_a_ml_delivery/assets/78473680/b776d220-8057-402f-a844-a0bd2c19b32a)
+	* Should go to url that look something like this https://adb-xxxxxxxxxxxxxxxxxx.azuredatabricks.net/?o=xxxxxxxxxxxxx#secrets/createScope![image](https://github.com/andreasfor/mvp_of_a_ml_delivery/assets/78473680/b776d220-8057-402f-a844-a0bd2c19b32a)
 
 
