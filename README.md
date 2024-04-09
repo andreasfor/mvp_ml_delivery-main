@@ -65,7 +65,7 @@ Expectations for gold layer is set to not allow compromized data (seen as task D
 
 ![image](docs/readme_imgs/data_validation_dlt_gold.png)
 
-The medallion structure was developed according to a component based approach. However, be aware that this is not a real component in its essence. Due to its low re-usability among other things. But it serves as an example of how to structure the interface, factory and main code (main code is just my name on where the majority of the program is run). And, please ignore the Call saying RAW_INTERNAL_DATABASE, this will be changed in future. 
+The medallion structure was developed according to a component based approach. However, be aware that this is not a real component in its essence. Due to its low re-usability among other things. But it serves as an example of how to structure the interface, factory and main code (main code is just my name on where the majority of the program is run). 
 
 ```
 medallion = MF.MedallionFactory.create_or_get(
